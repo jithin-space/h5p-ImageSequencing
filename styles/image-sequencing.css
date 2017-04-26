@@ -1,0 +1,128 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.l-wrap {
+  max-width: 1140px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.l-col-grid .grid-item {
+  margin: 10px;
+  float: left;
+}
+
+/*to prevent float collapse */
+.l-col-grid:after {
+  display: table;
+  clear: both;
+  content: '';
+}
+.h5p-submit{
+  font-size: 1em;
+  line-height: 1.2;
+  padding: 0.5em 1.25em;
+  border-radius:2em;
+  background-color:#1a73d9;
+  color:#ffffff;
+  cursor:pointer;
+  text-align: center;
+  float:right;
+}
+figure img { border: 1px solid #ccc; }
+  h1,h2,h3,h4 { clear: both; }
+  /* Prevent the contents of draggable elements from being selectable. */
+  [draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+  }
+  dd {
+    padding: 5px 0;
+  }
+  .columns {
+
+    float: left;
+    border: 2px solid #ffffff;
+    margin: 5px;
+    padding:3px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 3px #000;
+    -moz-box-shadow: inset 0 0 3px #000;
+    -ms-box-shadow: inset 0 0 3px #000;
+    -o-box-shadow: inset 0 0 3px #000;
+    box-shadow: inset 0 0 3px #000;
+    text-align: center;
+    cursor: move;
+    /*margin-bottom: 30px;*/
+  }
+  .columns header {
+    color: #fff;
+    text-shadow: #000 0 1px;
+    box-shadow: 5px;
+    padding: 5px;
+    background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    background: -webkit-gradient(linear, left top, right top,
+                                 color-stop(0, rgb(0,0,0)),
+                                 color-stop(0.50, rgb(79,79,79)),
+                                 color-stop(1, rgb(21,21,21)));
+    background: -webkit-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    background: -o-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+    border-bottom: 1px solid #ddd;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -ms-border-radius-topleft: 10px;
+    -o-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    -ms-border-radius-topright: 10px;
+    -o-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+  }
+  #columns-full .columns {
+    -webkit-transition: -webkit-transform 0.2s ease-out;
+    -moz-transition: -moz-transform 0.2s ease-out;
+    -o-transition: -o-transform 0.2s ease-out;
+    -ms-transition: -ms-transform 0.2s ease-out;
+  }
+  #columns-full .columns.over,
+  #columns-dragOver .columns.over,
+  #columns-dragEnd .columns.over,
+  #columns-almostFinal .columns.over {
+    border: 2px dashed #000;
+  }
+  #columns-full .columns.moving {
+    opacity: 0.25;
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    -ms-transform: scale(0.8);
+    -o-transform: scale(0.8);
+  }
+  #columns-full .columns .count {
+
+    font-weight: bold;
+
+  }
+
+  #columns-full .columns img{
+
+    font-weight: bold;
+    text-shadow: #fff 0 1px;
+  }

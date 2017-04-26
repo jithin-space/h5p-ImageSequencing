@@ -1,0 +1,51 @@
+{
+  "title": "Image Sequencing",
+  "description": "Sequence the Images in the order of occurance",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 2,
+  "runnable": 1,
+  "author": "Jithin Thankachan",
+  "license": "MIT",
+  "machineName": "H5P.ImageSequencing",
+  "preloadedCss": [
+    {
+      "path": "styles/image-sequencing.css"
+    }
+  ],
+  "preloadedJs": [
+    {
+      "path": "scripts/image-sequencing.js"
+    },
+    {
+      "path": "scripts/jquery-ui.js"
+    },
+    {
+      "path": "scripts/image.js"
+    },
+    {
+      "path": "scripts/dropper.js"
+    },
+    {
+      "path": "scripts/counter.js"
+    },
+    {
+      "path": "scripts/popup.js"
+    },
+    {
+      "path": "scripts/timer.js"
+    }
+  ],
+  "preloadedDependencies": [
+    {
+      "machineName": "H5P.Timer",
+      "majorVersion": 0,
+      "minorVersion": 4
+    },
+    {
+      "machineName": "H5P.JoubelUI",
+      "majorVersion": 1,
+      "minorVersion": 2
+    }
+  ]
+}

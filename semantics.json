@@ -1,0 +1,35 @@
+[
+  {
+    "name": "sequenceimages",
+    "type": "list",
+    "label": "Images",
+    "importance": "high",
+    "entity": "image",
+    "min": 3,
+    "max": 7,
+    "field": {
+      "type": "group",
+      "name": "image",
+      "label": "Image",
+      "importance": "high",
+      "fields": [
+        {
+          "name": "image",
+          "type": "image",
+          "label": "Image",
+          "importance": "high"
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "label": "Description",
+          "importance": "low",
+          "maxLength": 150,
+          "optional": true,
+          "description": "An optional short text that will pop up when the image is dropped in correct dropzone"
+        }
+      ]
+    }
+  }
+
+]
