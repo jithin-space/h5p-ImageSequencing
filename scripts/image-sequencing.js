@@ -60,10 +60,27 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
          };
 
         var finished = function (){
+          // alert("working");
+          calculateScore();
+          timer.stop();
+          self.feedback.addClass('h5p-show');
           //stop timer
           //show feedback good work
           //if retry option is enabled...create Button for try again and
           //resetGame
+        }
+
+        var calculateScore = function(){
+          images.forEach(function(element) {
+                // alert(element.getPos()+'on'+element.getSequenceNo());
+                if(element.getPos() == element.getSequenceNo()){
+                  element.correct();
+                }
+                else{
+                  element.incorrect();
+                }
+            });
+
         }
 
          var resetGame = function(){
@@ -83,13 +100,14 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
           //return buttonElement
         }
 
-        var addImage = function(image)
+        var addImage = function(image,pos)
         {
           image.on('drag',function(e){
             timer.play();
           });
 
-          images.push(image);
+          images[pos]= image;
+          // images.push(image);
 
         }
 
@@ -112,21 +130,24 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
          return [eWidth,iWidth];
        }
 
-       ImageSequencing.timer_start= function(){
-         timer.play();
-       }
 
-       var imagesToUse= getImagesToUse();
+
+
+      var imagesToUse= getImagesToUse();
+      seq=Array.apply(null, {length: imagesToUse.length}).map(Number.call, Number)
+      H5P.shuffleArray(seq);
        for (var i=0; i< imagesToUse.length; i++){
          var imageParams = imagesToUse[i];
          if (ImageSequencing.Image.isValid(imageParams)) {
-             var image = new ImageSequencing.Image(imageParams.image, id,i,imageParams.description);
-             addImage(image);
+             var image = new ImageSequencing.Image(imageParams.image, id,seq[i],i,imageParams.description);
+             addImage(image,seq[i]);
          }
 
        }
 
-       H5P.shuffleArray(images);
+      //  H5P.shuffleArray(images);
+
+
 
         self.attach = function($container) {
           //for once
@@ -139,7 +160,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
             if ($dragZone.children().length) {
                 $dragZone.appendTo($container);
 
-                $feedback = $('<div class="h5p-feedback"> Good Work! </div>').appendTo($container);
+                self.feedback = $('<div class="h5p-feedback"> Good Work! </div>').appendTo($container);
 
                 // Add status bar
                 var $status = $('<dl class="h5p-status">' +
@@ -148,9 +169,10 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
                     '<dt>Drags:</dt>' +
                     '<dd class="h5p-card-turns">0</dd>' +
                     '</dl>').appendTo($container);
-                var $submit= UI.createButton('acddl').appendTo($container);
+                //var $submit= H5P.JoubelUI.createButton('acddl').appendTo($container);
                 // self.$dropZone.append(H5P.JoubelUI.createTip(self.tip));
-                //submit=$('<button type="button" class="h5p-submit">Submit</button>').appendTo($container);
+                submit=$('<button type="button" class="h5p-submit">Submit</button>').appendTo($container);
+                submit.on('click',function(e){finished()});
                 timer = new ImageSequencing.Timer($status.find('.h5p-time-spent')[0]);
                 counter = new ImageSequencing.Counter($status.find('.h5p-card-turns'));
                 popup = new ImageSequencing.Popup($container);
@@ -184,4 +206,4 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     ImageSequencing.prototype.constructor = ImageSequencing;
 
     return ImageSequencing;
-})(H5P.EventDispatcher, H5P.jQuery , H5P.JoubelUI);
+})(H5P.EventDispatcher, H5P.jQuery );

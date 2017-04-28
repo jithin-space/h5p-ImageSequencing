@@ -1,11 +1,10 @@
 (function(ImageSequencing, EventDispatcher, $) {
 
 
-    ImageSequencing.Image = function(image, id, seq_no, description,level) {
+    ImageSequencing.Image = function(image, id, pos,seq_no, description,level) {
 
         var self = this;
         EventDispatcher.call(self);
-        self.seq_no=seq_no;
 
         var path = H5P.getPath(image.path, id);
         var width, height, margin, $card;
@@ -54,15 +53,25 @@
 
 
         self.getImage = function() {
-            return $img.find('img').clone();
+            return $image.find('img').clone();
         };
+
+        self.getPos = function() {
+          // alert(self.$dropper.find('img').attr('data-pos'));
+          return self.$dropper.find('img').attr('data-pos');
+          // return img.getAttribute('data-pos');
+        }
 
         self.getSequenceNo = function() {
-          return self.seq_no;
+          return self.$dropper.find('img').attr('data-id');
         };
-
-        drag= function(ev) {
-          ev.dataTransfer.setData("id",ev.target.getAttribute('data-id'));
+        self.correct= function(){
+          self.$dropper.removeClass('incorrect');
+          self.$dropper.addClass('correct');
+        }
+        self.incorrect= function(){
+          self.$dropper.removeClass('correct');
+          self.$dropper.addClass('incorrect');
         }
 
         Element.prototype.hasClassName = function(name) {
@@ -87,11 +96,12 @@
         self.handleStart=function(e,th){
           th.style.opacity = '0.4';  // this / e.target is the source node.
           dragSrcEl_ = th;
+          th.
+          srcImg_=this;
+          // console.log(self.seq_no);
           th.addClassName('moving');
-
           e.originalEvent.dataTransfer.effectAllowed = 'move';
           e.originalEvent.dataTransfer.setData('text/html', th.innerHTML);
-
           self.trigger('drag');
         }
 
@@ -130,7 +140,12 @@
           th.innerHTML = e.originalEvent.dataTransfer.getData('text/html');
           var count = th.querySelector('.count');
           var newCount = parseInt(count.getAttribute('data-col-moves')) + 1;
-
+          var img1 = th.querySelector('img');
+          var pos1 = parseInt(img1.getAttribute('data-pos'));
+          var img2 = dragSrcEl_.querySelector('img');
+          var pos2 = parseInt(img2.getAttribute('data-pos'));
+          img1.setAttribute('data-pos',pos2);
+          img2.setAttribute('data-pos',pos1);
           count.setAttribute('data-col-moves', newCount);
           count.textContent = 'moves: ' + newCount;
         }
@@ -143,6 +158,7 @@
       // this/e.target is the source node.
       var id_ = 'columns-full';
       var cols_ = document.querySelectorAll('#' + id_ + ' .columns');
+      console.log(cols_.length);
         [].forEach.call(cols_, function (col) {
           col.removeClassName('over');
           col.removeClassName('moving');
@@ -156,8 +172,9 @@
         self.appendTo = function($container) {
             var width  = ImageSequencing.calculate($container.width());
             $dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
-            <img src="' + path + '" data-id="'+self.getSequenceNo()+'"  alt="Sequence Image Card" \
+            <img src="' + path + '" data-pos="'+pos+'" data-id="'+seq_no+'""  alt="Sequence Image Card" \
              width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
+            self.$dropper=$dropper;
             $dropper.on('dragstart',function(e){self.handleStart(e,this)});
             $dropper.on('dragenter',function(e){self.handleDragEnter(e,this)});
             $dropper.on('dragover',function(e){self.handleDragOver(e)});

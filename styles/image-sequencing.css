@@ -126,3 +126,35 @@ figure img { border: 1px solid #ccc; }
     font-weight: bold;
     text-shadow: #fff 0 1px;
   }
+
+
+   .h5p-feedback {
+    clear: both;
+    float: right;
+    line-height: 1.5em;
+    margin-right: 1em;
+    font-size: 2em;
+    visibility: hidden;
+    -webkit-transform: scale(0,0) rotate(90deg);
+    -moz-transform: scale(0,0) rotate(90deg);
+    -ms-transform: scale(0,0) rotate(90deg);
+    transform: scale(0,0) rotate(90deg);
+    -webkit-transition: -webkit-transform 0.2s;
+    -moz-transition: -webkit-transform 0.2s;
+    transition: -webkit-transform 0.2s;
+  }
+
+   .h5p-show {
+    visibility: visible;
+    -webkit-transform: scale(1,1) rotate(0deg);
+    -moz-transform: scale(1,1) rotate(0deg);
+    -ms-transform: scale(1,1) rotate(0deg);
+    transform: scale(1,1) rotate(0deg);
+  }
+
+  .correct{
+    border:2px solid green;
+  }
+  .incorrect{
+    border:2px solid red;
+  }
