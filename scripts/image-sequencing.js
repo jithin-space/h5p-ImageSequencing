@@ -169,7 +169,14 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
                     '<dt>Drags:</dt>' +
                     '<dd class="h5p-card-turns">0</dd>' +
                     '</dl>').appendTo($container);
-                //var $submit= H5P.JoubelUI.createButton('acddl').appendTo($container);
+		var $button = H5P.JoubelUI.createButton({
+  title: 'Retry',
+  click: function (event) {
+    console.log('Retry was clicked');
+  }
+}).appendTo($container);
+		//H5P.JoubelUI.showButton('acddl');
+		var $progressbar=H5P.JoubelUI.createScoreBar(5,'Progress').appendTo($container);
                 // self.$dropZone.append(H5P.JoubelUI.createTip(self.tip));
                 submit=$('<button type="button" class="h5p-submit">Submit</button>').appendTo($container);
                 submit.on('click',function(e){finished()});
