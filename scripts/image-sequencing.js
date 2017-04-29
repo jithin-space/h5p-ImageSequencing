@@ -11,6 +11,9 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       var shuffled=[];
 
       var addImage = function(image){
+        image.on('reattach',function(){
+          reattach();
+        });
         imageList.push(image)
       }
       var getGameLevel = function(){
@@ -29,12 +32,17 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         }
 
       }
+
+      var setImagePos(){
+        
+      }
       var scaleGameSize = function() {
         // resizing value;
       }
       var initializeGame = function(images,id){
         setImageList(images,id);
         setGameLevel();
+        setImagePos();
         shuffled=H5P.shuffleArray(imageList);
       }
 
@@ -45,25 +53,38 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       }
 
       var reattach = function(){
-        $dragZone.empty();
-        var $dragZone = $('<div id="columns-full" class="l-col-grid"/>');
+        self.$dragZone.empty();
+        self.$dragZone = $('<div id="columns-full" class="l-col-grid"/>');
+        console.log(shuffled);
         for (var i = 0; i < level; i++) {
-            shuffled[i].appendTo($dragZone,size);
+          //console.log(shuffled[i].pos);
+
+      function compare(a,b) {
+        if (a.pos < b.pos)
+          return -1;
+        if (a.pos > b.pos)
+          return 1;
+        return 0;
+      }
+
+      shuffled.sort(compare);
+            shuffled[i].appendTo(self.$dragZone,self.$size,shuffled[i].pos);
         }
+        self.$dragZone.appendTo(self.$wrapper);
       }
 
        initializeGame(parameters.sequenceimages,id);
 
         self.attach = function($container) {
 
-            var $wrapper = $container.addClass('l-wrap').html('');
-            var size = calculate($wrapper.width());
-            var $dragZone = $('<div id="columns-full" class="l-col-grid"/>');
+            self.$wrapper = $container.addClass('l-wrap').html('');
+            self.$size = calculate(self.$wrapper.width());
+            self.$dragZone = $('<div id="columns-full" class="l-col-grid"/>');
             for (var i = 0; i < level; i++) {
-                shuffled[i].appendTo($dragZone,size);
+                shuffled[i].appendTo(self.$dragZone,self.$size,i);
             }
             if (level) {
-                $dragZone.appendTo($container);
+                self.$dragZone.appendTo($container);
                 var $feedback = $('<div class="h5p-feedback"> Good Work! </div>').appendTo($container);
                 var $status = $('<dl class="h5p-status">' + '<dt>Time Spent</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
                     '<dt>Drags:</dt>' + '<dd class="h5p-card-turns">0</dd>' + '</dl>').appendTo($container);

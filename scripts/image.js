@@ -42,10 +42,10 @@
 
         self.handleStart=function(e){
           self.$dropper.css('opacity','0.4');
-          dragSrcEl_ = self.$dropper;
+          dragSrcEl_ = self;
           self.$dropper.addClass('moving');
           e.originalEvent.dataTransfer.effectAllowed = 'move';
-          e.originalEvent.dataTransfer.setData('dropper',self.$dropper);
+          e.originalEvent.dataTransfer.setData('pos',self.pos);
           // self.trigger('drag');
         }
 
@@ -77,12 +77,18 @@
         }
 
 
-        if (dragSrcEl_ != self.$dropper) {
+        if (dragSrcEl_.pos != self.pos) {
+
+          dragSrcEl_.pos=self.pos;
+          self.pos=e.originalEvent.dataTransfer.getData('pos');
+
+          self.trigger('reattach');
+          //dragSrcEl_.pos=self.pos;
 
           // Set the source column's HTML to the HTML of the column we dropped on.
-           dragSrcEl_= self.$dropper;
-           self.$dropper= e.originalEvent.dataTransfer.getData('dropper');
-           self.trigger('reattach');
+          //  dragSrcEl_= self;
+          //  self= e.originalEvent.dataTransfer.getData('dropper');
+          //  self.trigger('reattach');
           // var count = th.querySelector('.count');
           // var newCount = parseInt(count.getAttribute('data-col-moves')) + 1;
           // var img1 = th.querySelector('img');
@@ -114,9 +120,10 @@
 
 
 
-        self.appendTo = function($container,width) {
+        self.appendTo = function($container,width,pos) {
             self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
             <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
+            self.pos=pos;
             self.$dropper.on('dragstart',function(e){self.handleStart(e)});
             self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});
             self.$dropper.on('dragover',function(e){self.handleDragOver(e)});
