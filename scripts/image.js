@@ -37,35 +37,21 @@
           self.$dropper.addClass('incorrect');
         }
 
-        Element.prototype.hasClassName = function(name) {
-        return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
-      };
 
-      Element.prototype.addClassName = function(name) {
-        if (!this.hasClassName(name)) {
-          this.className = this.className ? [this.className, name].join(' ') : name;
-        }
-      };
-
-      Element.prototype.removeClassName = function(name) {
-        if (this.hasClassName(name)) {
-          var c = this.className;
-          this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
-        }
-      };
 
 
         self.handleStart=function(e){
-          self.$dropper.style.opacity = '0.4';
+          self.$dropper.css('opacity','0.4');
           dragSrcEl_ = self.$dropper;
-          self.$dropper.addClassName('moving');
+          self.$dropper.addClass('moving');
           e.originalEvent.dataTransfer.effectAllowed = 'move';
-          self.trigger('drag');
+          e.originalEvent.dataTransfer.setData('dropper',self.$dropper);
+          // self.trigger('drag');
         }
 
-        self.handleDragEnter=function(e,th) {
-          // this / e.target is the current hover target.
-          th.classList.add('over');
+        self.handleDragEnter=function(e) {
+
+           self.$dropper.addClass('over');
           }
 
         self.handleDragOver=function(e) {
@@ -78,11 +64,11 @@
           return false;
           }
 
-          self.handleDragLeave=function(e,th) {
-            th.classList.remove('over');  // this / e.target is previous target element.
+          self.handleDragLeave=function(e) {
+            self.$dropper.removeClass('over');  // this / e.target is previous target element.
           }
 
-        self.handleDrop=function(e,th) {
+        self.handleDrop=function(e) {
         // this / e.target is current target element.
 
 
@@ -91,52 +77,52 @@
         }
 
 
-        if (dragSrcEl_ != th) {
+        if (dragSrcEl_ != self.$dropper) {
 
           // Set the source column's HTML to the HTML of the column we dropped on.
-          dragSrcEl_.innerHTML = th.innerHTML;
-          th.innerHTML = e.originalEvent.dataTransfer.getData('text/html');
-          var count = th.querySelector('.count');
-          var newCount = parseInt(count.getAttribute('data-col-moves')) + 1;
-          var img1 = th.querySelector('img');
-          var pos1 = parseInt(img1.getAttribute('data-pos'));
-          var img2 = dragSrcEl_.querySelector('img');
-          var pos2 = parseInt(img2.getAttribute('data-pos'));
-          img1.setAttribute('data-pos',pos2);
-          img2.setAttribute('data-pos',pos1);
-          count.setAttribute('data-col-moves', newCount);
-          count.textContent = 'moves: ' + newCount;
+           dragSrcEl_= self.$dropper;
+           self.$dropper= e.originalEvent.dataTransfer.getData('dropper');
+           self.trigger('reattach');
+          // var count = th.querySelector('.count');
+          // var newCount = parseInt(count.getAttribute('data-col-moves')) + 1;
+          // var img1 = th.querySelector('img');
+          // var pos1 = parseInt(img1.getAttribute('data-pos'));
+          // var img2 = dragSrcEl_.querySelector('img');
+          // var pos2 = parseInt(img2.getAttribute('data-pos'));
+          // img1.setAttribute('data-pos',pos2);
+          // img2.setAttribute('data-pos',pos1);
+          // count.setAttribute('data-col-moves', newCount);
+          // count.textContent = 'moves: ' + newCount;
         }
         // See the section on the DataTransfer object.
-        self.handleDragEnd(e,th);
+        // self.handleDragEnd(e,th);
         return false;
       }
 
       self.handleDragEnd=function(e,th) {
       // this/e.target is the source node.
-      var id_ = 'columns-full';
-      var cols_ = document.querySelectorAll('#' + id_ + ' .columns');
-      console.log(cols_.length);
-        [].forEach.call(cols_, function (col) {
-          col.removeClassName('over');
-          col.removeClassName('moving');
-          col.style.opacity ='1';
-        });
+      // var id_ = 'columns-full';
+      // var cols_ = document.querySelectorAll('#' + id_ + ' .columns');
+      // console.log(cols_.length);
+      //   [].forEach.call(cols_, function (col) {
+      //     col.removeClassName('over');
+      //     col.removeClassName('moving');
+      //     col.style.opacity ='1';
+      //   });
     }
 
 
 
 
-        self.appendTo = function($container) {
-            width=[100,100];
+        self.appendTo = function($container,width) {
             self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
             <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
-            self.$dropper.on('dragstart',function(e){handleStart(e)});
-            self.$dropper.on('dragenter',function(e){handleEnter(e)});
-            self.$dropper.on('dragover',function(e){handleOver(e)});
-            self.$dropper.on('dragleave',function(e){handleLeave(e)});
-            self.$dropper.on('drop',function(e){handleDrop(e)});
-            self.$dropper.on('dragend',function(e){handleDragEnd(e)});
+            self.$dropper.on('dragstart',function(e){self.handleStart(e)});
+            self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});
+            self.$dropper.on('dragover',function(e){self.handleDragOver(e)});
+            self.$dropper.on('dragleave',function(e){self.handleDragLeave(e)});
+            self.$dropper.on('drop',function(e){self.handleDrop(e)});
+            self.$dropper.on('dragend',function(e){self.handleDragEnd(e)});
         };
     };
 
@@ -144,9 +130,7 @@
     ImageSequencing.Image.prototype.constructor = ImageSequencing.Image;
 
     ImageSequencing.Image.isValid = function(params) {
-        return (params !== undefined &&
-            params.image !== undefined &&
-            params.image.path !== undefined);
+        return (params !== undefined && params.image !== undefined && params.image.path !== undefined);
     };
 
 })(H5P.ImageSequencing, H5P.EventDispatcher, H5P.jQuery);

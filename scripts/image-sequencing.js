@@ -38,15 +38,29 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         shuffled=H5P.shuffleArray(imageList);
       }
 
+      var calculate = function(width){
+        var eWidth = (width - (2 * level)) / level;
+        var iWidth = (eWidth - (20));
+        return [eWidth,iWidth];
+      }
+
+      var reattach = function(){
+        $dragZone.empty();
+        var $dragZone = $('<div id="columns-full" class="l-col-grid"/>');
+        for (var i = 0; i < level; i++) {
+            shuffled[i].appendTo($dragZone,size);
+        }
+      }
+
        initializeGame(parameters.sequenceimages,id);
 
         self.attach = function($container) {
 
             var $wrapper = $container.addClass('l-wrap').html('');
-            var size = self.calculate($wrapper.width());
+            var size = calculate($wrapper.width());
             var $dragZone = $('<div id="columns-full" class="l-col-grid"/>');
             for (var i = 0; i < level; i++) {
-                shuffled[i].appendTo($dragZone);
+                shuffled[i].appendTo($dragZone,size);
             }
             if (level) {
                 $dragZone.appendTo($container);
