@@ -1,51 +1,14 @@
 (function(ImageSequencing, EventDispatcher, $) {
 
 
-    ImageSequencing.Image = function(image, id, pos,seq_no, description,level) {
+    ImageSequencing.Image = function(image,id,seq_no,description) {
 
         var self = this;
         EventDispatcher.call(self);
 
         var path = H5P.getPath(image.path, id);
-        var width, height, margin, $card;
-
-        if (image.width !== undefined && image.height !== undefined) {
-            if (image.width > image.height) {
-                width = '100%';
-                height = 'auto';
-            } else {
-                height = '100%';
-                width = 'auto';
-            }
-        } else {
-            width = height = '100%';
-        }
-
-
-        self.drop = function() {
-            $image.addClass('h5p-drag');
-            self.trigger('drop');
-        };
-
-
-        self.dropBack = function() {
-            $image.removeClass('h5p-drag');
-        };
-
-        /**
-         * Remove.
-         */
-        self.remove = function() {
-            $image.addClass('h5p-matched');
-        };
-
-        /**
-         * Reset card to natural state
-         */
-        self.reset = function() {
-            $image.classList.remove('h5p-drag', 'h5p-matched');
-        };
-
+        var seq_no = seq_no;
+        var description = description;
 
         self.getDescription = function() {
             return description;
@@ -92,16 +55,11 @@
       };
 
 
-
-        self.handleStart=function(e,th){
-          th.style.opacity = '0.4';  // this / e.target is the source node.
-          dragSrcEl_ = th;
-          th.
-          srcImg_=this;
-          // console.log(self.seq_no);
-          th.addClassName('moving');
+        self.handleStart=function(e){
+          self.$dropper.style.opacity = '0.4';
+          dragSrcEl_ = self.$dropper;
+          self.$dropper.addClassName('moving');
           e.originalEvent.dataTransfer.effectAllowed = 'move';
-          e.originalEvent.dataTransfer.setData('text/html', th.innerHTML);
           self.trigger('drag');
         }
 
@@ -170,51 +128,26 @@
 
 
         self.appendTo = function($container) {
-            var width  = ImageSequencing.calculate($container.width());
-            $dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
+            width=[100,100];
+            self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
             <img src="' + path + '" data-pos="'+pos+'" data-id="'+seq_no+'""  alt="Sequence Image Card" \
              width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
-            self.$dropper=$dropper;
-            $dropper.on('dragstart',function(e){self.handleStart(e,this)});
-            $dropper.on('dragenter',function(e){self.handleDragEnter(e,this)});
-            $dropper.on('dragover',function(e){self.handleDragOver(e)});
-            $dropper.on('dragleave',function(e){self.handleDragLeave(e,this)});
-            $dropper.on('drop',function(e){self.handleDrop(e,this)});
-            $dropper.on('dragend',function(e){self.handleDragEnd(e,this)});
-
+            self.$dropper.on('dragstart',handleStart(e));
+            self.$dropper.on('dragenter',handleDragEnter(e));
+            self.$dropper.on('dragover',handleDragOver(e));
+            self.$dropper.on('dragleave',handleDragLeave(e));
+            self.$dropper.on('drop',handleDrop(e));
+            self.$dropper.on('dragend',handleDragEnd(e));
         };
-
-        /**
-         * Re-append to parent container
-         */
-        // self.reAppend = function() {
-        //     var parent = $Image[0].parentElement.parentElement;
-        //     parent.appendChild($Image[0].parentElement);
-        // };
     };
 
-    // Extends the event dispatcher
     ImageSequencing.Image.prototype = Object.create(EventDispatcher.prototype);
     ImageSequencing.Image.prototype.constructor = ImageSequencing.Image;
 
-    /**
-     * Check to see if the given object corresponds with the semantics for
-     * a memory game Image.
-     *
-     * @param {object} params
-     * @returns {boolean}
-     */
-     ImageSequencing.Image.isValid = function(params) {
+    ImageSequencing.Image.isValid = function(params) {
         return (params !== undefined &&
             params.image !== undefined &&
             params.image.path !== undefined);
     };
-
-
-    // ImageSequencing.Card.hasTwoImages = function(params) {
-    //     return (params !== undefined &&
-    //         params.match !== undefined &&
-    //         params.match.path !== undefined);
-    // };
 
 })(H5P.ImageSequencing, H5P.EventDispatcher, H5P.jQuery);
