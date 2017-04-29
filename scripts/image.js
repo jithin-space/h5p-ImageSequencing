@@ -14,6 +14,9 @@
             return description;
         };
 
+        self.setPos = function(pos){
+          self.pos=pos;
+        }
 
         self.getImage = function() {
             return $image.find('img').clone();
@@ -120,10 +123,9 @@
 
 
 
-        self.appendTo = function($container,width,pos) {
+        self.appendTo = function($container,width) {
             self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
             <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
-            self.pos=pos;
             self.$dropper.on('dragstart',function(e){self.handleStart(e)});
             self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});
             self.$dropper.on('dragover',function(e){self.handleDragOver(e)});
