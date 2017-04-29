@@ -130,14 +130,13 @@
         self.appendTo = function($container) {
             width=[100,100];
             self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
-            <img src="' + path + '" data-pos="'+pos+'" data-id="'+seq_no+'""  alt="Sequence Image Card" \
-             width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
-            self.$dropper.on('dragstart',handleStart(e));
-            self.$dropper.on('dragenter',handleDragEnter(e));
-            self.$dropper.on('dragover',handleDragOver(e));
-            self.$dropper.on('dragleave',handleDragLeave(e));
-            self.$dropper.on('drop',handleDrop(e));
-            self.$dropper.on('dragend',handleDragEnd(e));
+            <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
+            self.$dropper.on('dragstart',function(e){handleStart(e)});
+            self.$dropper.on('dragenter',function(e){handleEnter(e)});
+            self.$dropper.on('dragover',function(e){handleOver(e)});
+            self.$dropper.on('dragleave',function(e){handleLeave(e)});
+            self.$dropper.on('drop',function(e){handleDrop(e)});
+            self.$dropper.on('dragend',function(e){handleDragEnd(e)});
         };
     };
 
