@@ -124,7 +124,7 @@
 
 
         self.appendTo = function($container,width) {
-            self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
+            self.$dropper = $('<div>\
             <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
             self.$dropper.on('dragstart',function(e){self.handleStart(e)});
             self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});
