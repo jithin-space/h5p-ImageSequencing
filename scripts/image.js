@@ -23,9 +23,7 @@
         };
 
         self.getPos = function() {
-          // alert(self.$dropper.find('img').attr('data-pos'));
-          return self.$dropper.find('img').attr('data-pos');
-          // return img.getAttribute('data-pos');
+          return self.pos;
         }
 
         self.getSequenceNo = function() {
@@ -55,12 +53,24 @@
         self.handleDragEnter=function(e) {
 
            self.$dropper.addClass('over');
+
+           if (dragSrcEl_.pos != self.pos) {
+
+             var i= self.pos
+             self.pos=dragSrcEl_.pos;
+             dragSrcEl_.pos=i - (i * 2)-1;
+             //console.log(dragSrcEl_.pos);
+             self.trigger('reattach');
+
+           }
           }
 
         self.handleDragOver=function(e) {
           if (e.preventDefault) {
-          e.preventDefault(); // Necessary. Allows us to drop.
+          e.preventDefault(); 
           }
+
+
 
           e.originalEvent.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
 
@@ -82,9 +92,7 @@
 
         if (dragSrcEl_.pos != self.pos) {
 
-          dragSrcEl_.pos=self.pos;
-          self.pos=e.originalEvent.dataTransfer.getData('pos');
-
+          dragSrcEl_.pos=e.originalEvent.dataTransfer.getData('pos');
           self.trigger('reattach');
           //dragSrcEl_.pos=self.pos;
 
@@ -108,7 +116,8 @@
         return false;
       }
 
-      self.handleDragEnd=function(e,th) {
+      self.handleDragEnd=function(e) {
+        alert("working");
       // this/e.target is the source node.
       // var id_ = 'columns-full';
       // var cols_ = document.querySelectorAll('#' + id_ + ' .columns');
@@ -124,7 +133,7 @@
 
 
         self.appendTo = function($container,width) {
-            self.$dropper = $('<div>\
+            self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
             <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
             self.$dropper.on('dragstart',function(e){self.handleStart(e)});
             self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});

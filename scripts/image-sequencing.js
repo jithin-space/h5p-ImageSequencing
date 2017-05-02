@@ -34,6 +34,15 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
 
       }
 
+      var setDropper = function(){
+            var dropper = new ImageSequencing.Dropper();
+        }
+      var getDropper = function(){
+         return dropper;
+      }
+
+      }
+
       var setRandomSequence = function(){
         sequence=Array.apply(null, {length: level}).map(Number.call, Number);
         H5P.shuffleArray(sequence);
@@ -48,12 +57,15 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
 
       var setImageHolder = function(list){
           for (var i = 0; i < level; i++) {
-            if(list[i] != undefined){
-              imageHolder[i]=$('<div class="columns"  draggable="true"><header class="count" data-col-moves="0">moves:0</header></div>');
-              list[i].appendTo(imageHolder[i]);
+            position=list[i].getPos();
+            if(position >=0){
+              imageHolder[position]=$('<div class="imageHolder"></div>');
+              list[i].appendTo(imageHolder[position],self.size);
             }
             else{
-              imageHolder[i]=$('<div class="columns" width="'+self.size[0]+'px" height="'self.size[1]+'px" draggable="true"></div>');
+              position++;
+              position=position-(position * 2);
+              dropper.appendTo(imageHolder[position],self.size);
             }
 
           }
@@ -64,6 +76,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       }
       var initializeGame = function(images,id){
         setImageList(images,id);
+        setDropper();
         setGameLevel();
         setRandomSequence();
         setImagePos();
@@ -87,15 +100,22 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
 
 
       var reattach = function(){
-        self.$dragZone.empty();
+        self.$wrapper.empty();
         self.$dragZone = $('<div id="columns-full" class="l-col-grid"/>');
         // console.log(shuffled);
+        setImageHolder(imageList);
         for (var i = 0; i < level; i++) {
-
-        imageList.sort(reorder);
-        imageList[i].appendTo(self.$dragZone,self.$size);
+        imageHolder[i].appendTo(self.$dragZone,self.$size);
         }
-        self.$dragZone.appendTo(self.$wrapper);
+        if (level) {
+            self.$dragZone.appendTo(self.$wrapper);
+            var $feedback = $('<div class="h5p-feedback"> Good Work! </div>').appendTo(self.$wrapper);
+            var $status = $('<dl class="h5p-status">' + '<dt>Time Spent</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
+                '<dt>Drags:</dt>' + '<dd class="h5p-card-turns">0</dd>' + '</dl>').appendTo(self.$wrapper);
+            var $submit=$('<button type="button" class="h5p-submit">Submit</button>').appendTo(self.$wrapper).on('click',function(e){gameSubmitted()});
+            timer = new ImageSequencing.Timer($status.find('.h5p-time-spent')[0]);
+            counter = new ImageSequencing.Counter($status.find('.h5p-card-turns'));
+        }
       }
 
        initializeGame(parameters.sequenceimages,id);
@@ -120,7 +140,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
             }
         }
 
-    }
+  
 
     ImageSequencing.prototype = Object.create(EventDispatcher.prototype);
     ImageSequencing.prototype.constructor = ImageSequencing;
