@@ -139,8 +139,9 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
                 counter = new ImageSequencing.Counter($status.find('.h5p-card-turns'));
             }
         }
+      };
 
-  
+
 
     ImageSequencing.prototype = Object.create(EventDispatcher.prototype);
     ImageSequencing.prototype.constructor = ImageSequencing;
