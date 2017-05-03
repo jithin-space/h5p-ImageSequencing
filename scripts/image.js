@@ -27,7 +27,7 @@
         }
 
         self.getSequenceNo = function() {
-          return self.$dropper.find('img').attr('data-id');
+          return seq_no;
         };
         self.correct= function(){
           self.$dropper.removeClass('incorrect');

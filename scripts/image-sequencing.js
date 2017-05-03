@@ -10,13 +10,14 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         var imageHolder = [];
         var level = 0;
         var sequence = [];
+        var timer;
 
         var addImage = function(image) {
             image.on('reattach', function() {
                 reattach();
             });
             image.on('drag', function(){
-              
+                self.timer.play();
             });
             imageList.push(image);
         }
@@ -112,6 +113,30 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         return 0;
     }
 
+    var gameSubmitted = function (){
+
+      calculateScore();
+      self.timer.stop();
+      self.$feedback.addClass('h5p-show');
+      self.$progressBar.$scoreBar.addClass('h5p-show');
+      //stop timer
+      //show feedback good work
+      //if retry option is enabled...create Button for try again and
+      //resetGame
+    }
+
+    var calculateScore = function(){
+      score=0
+      imageList.forEach(function(element) {
+            // alert(element.getPos()+'on'+element.getSequenceNo());
+            if(element.getPos() == element.getSequenceNo()){
+              score++;
+            }
+
+        });
+      self.$progressBar.setScore(score);
+
+    }
 
     var reattach = function() {
         self.$wrapper.empty();
@@ -125,14 +150,13 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         }
         if (level) {
             self.$dragZone.appendTo(self.$wrapper);
-            var $feedback = $('<div class="h5p-feedback"> Good Work! </div>').appendTo(self.$wrapper);
-            var $status = $('<dl class="h5p-status">' + '<dt>Time Spent</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
-                '<dt>Drags:</dt>' + '<dd class="h5p-card-turns">0</dd>' + '</dl>').appendTo(self.$wrapper);
-            var $submit = $('<button type="button" class="h5p-submit">Submit</button>').appendTo(self.$wrapper).on('click', function(e) {
+            self.$feedback.appendTo(self.$wrapper);
+            self.$progressBar.appendTo(self.$wrapper);
+            self.$status.appendTo(self.$wrapper);
+            self.$submit.appendTo(self.$wrapper).on('click', function(e) {
                 gameSubmitted()
             });
-            timer = new ImageSequencing.Timer($status.find('.h5p-time-spent')[0]);
-            counter = new ImageSequencing.Counter($status.find('.h5p-card-turns'));
+
         }
     }
 
@@ -149,14 +173,20 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         }
         if (level) {
             self.$dragZone.appendTo($container);
-            var $feedback = $('<div class="h5p-feedback"> Good Work! </div>').appendTo($container);
-            var $status = $('<dl class="h5p-status">' + '<dt>Time Spent</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
-                '<dt>Drags:</dt>' + '<dd class="h5p-card-turns">0</dd>' + '</dl>').appendTo($container);
-            var $submit = $('<button type="button" class="h5p-submit">Submit</button>').appendTo($container).on('click', function(e) {
+            self.$feedback = $('<div class="h5p-feedback"> Good Work! </div>');
+            self.$progressBar=UI.createScoreBar(level, 'scoreBarLabel');
+            self.$progressBar.appendTo($container);
+            self.$progressBar.$scoreBar.addClass("h5p-feedback");
+            self.$feedback.appendTo($container);
+            self.$status = $('<dl class="h5p-status">' + '<dt>Time Spent</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
+                '<dt>Drags:</dt>' + '<dd class="h5p-card-turns">0</dd>' + '</dl>');
+            self.$status.appendTo($container);
+            self.$submit = $('<button type="button" class="h5p-submit">Submit</button>').on('click', function(e) {
                 gameSubmitted()
             });
-            timer = new ImageSequencing.Timer($status.find('.h5p-time-spent')[0]);
-            counter = new ImageSequencing.Counter($status.find('.h5p-card-turns'));
+            self.$submit.appendTo($container);
+            self.timer = new ImageSequencing.Timer(self.$status.find('.h5p-time-spent')[0]);
+            self.counter = new ImageSequencing.Counter(self.$status.find('.h5p-card-turns'));
         }
     }
 
