@@ -9,6 +9,7 @@
         var path = H5P.getPath(image.path, id);
         var seq_no = seq_no;
         var description = description;
+        var moves=0;
 
         self.getDescription = function() {
             return description;
@@ -16,6 +17,14 @@
 
         self.setPos = function(pos){
           self.pos=pos;
+        }
+
+        self.getMoves= function(){
+          return moves;
+        }
+
+        self.setMoves = function(){
+          moves++;
         }
 
         self.getImage = function() {
@@ -67,7 +76,6 @@
 
            self.$dropper.addClass('over');
           if (dragSrcEl_.pos != self.pos) {
-
              var i= self.pos;
              var move=Math.abs(dragSrcEl_.pos) - self.pos;
              var current=self;
@@ -141,7 +149,7 @@
 
 
         self.appendTo = function($container,width) {
-            self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
+            self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:'+self.getMoves()+'</header><div>\
             <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
             self.$dropper.on('dragstart',function(e){self.handleStart(e)});
             self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});

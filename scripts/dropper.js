@@ -44,6 +44,7 @@
 
           // dragSrcEl_=e.originalEvent.dataTransfer.getData('src');
           dragSrcEl_.pos=self.pos;
+          dragSrcEl_.setMoves();
           self.trigger('reattach');
 
 
@@ -53,7 +54,7 @@
 
 
           self.appendTo = function($container,width) {
-              self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" ><header class="count" data-col-moves="0">moves:0</header>\
+              self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" ><header class="count" data-col-moves="0">Drop Here</header>\
               <div style="min-height:'+width[1]+'px;min-width:'+width[1]+'px;">please drop </div></div>').appendTo($container);
 
               self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});
