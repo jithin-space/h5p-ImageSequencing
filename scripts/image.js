@@ -38,6 +38,18 @@
           self.$dropper.addClass('incorrect');
         }
 
+        self.setNext = function(image){
+          self.next=image;
+        }
+        self.setPrev = function(image){
+          self.prev=image;
+        }
+        self.getNext = function(){
+          return self.next;
+        }
+        self.getPrevious = function(){
+          return self.prev;
+        }
 
 
 
@@ -46,28 +58,47 @@
           dragSrcEl_ = self;
           self.$dropper.addClass('moving');
           e.originalEvent.dataTransfer.effectAllowed = 'move';
-          e.originalEvent.dataTransfer.setData('pos',self.pos);
-          // self.trigger('drag');
+          //e.originalEvent.dataTransfer.setData('pos',self.pos);
+          e.originalEvent.dataTransfer.setData('src',self);
+          self.trigger('drag');
         }
 
         self.handleDragEnter=function(e) {
 
            self.$dropper.addClass('over');
+          if (dragSrcEl_.pos != self.pos) {
 
-           if (dragSrcEl_.pos != self.pos) {
+             var i= self.pos;
+             var move=Math.abs(dragSrcEl_.pos) - self.pos;
+             var current=self;
+             if(move>0){
+               //dir=righ
+               while(current != undefined && move !=0){
+                 next=current.getNext();
+                 current.pos+=1;
+                 current=next;
+                 move--;
+               }
+             }
+             else{
+               while(current != undefined && move !=0){
+                 prev=current.getPrevious();
+                 current.pos-=1;
+                 current=prev;
+                 move++;
+               }
+             }
 
-             var i= self.pos
-             self.pos=dragSrcEl_.pos;
-             dragSrcEl_.pos=i - (i * 2)-1;
-             //console.log(dragSrcEl_.pos);
+               dragSrcEl_.pos=i - (i * 2);
              self.trigger('reattach');
 
            }
+
           }
 
         self.handleDragOver=function(e) {
           if (e.preventDefault) {
-          e.preventDefault(); 
+          e.preventDefault();
           }
 
 
@@ -89,27 +120,12 @@
           e.preventDefault(); // stops the browser from redirecting.
         }
 
-
+        self.$dropper.removeClass('over');
         if (dragSrcEl_.pos != self.pos) {
 
-          dragSrcEl_.pos=e.originalEvent.dataTransfer.getData('pos');
-          self.trigger('reattach');
+          //dragSrcEl_.pos=e.originalEvent.dataTransfer.getData('pos');
+          //self.trigger('reattach');
           //dragSrcEl_.pos=self.pos;
-
-          // Set the source column's HTML to the HTML of the column we dropped on.
-          //  dragSrcEl_= self;
-          //  self= e.originalEvent.dataTransfer.getData('dropper');
-          //  self.trigger('reattach');
-          // var count = th.querySelector('.count');
-          // var newCount = parseInt(count.getAttribute('data-col-moves')) + 1;
-          // var img1 = th.querySelector('img');
-          // var pos1 = parseInt(img1.getAttribute('data-pos'));
-          // var img2 = dragSrcEl_.querySelector('img');
-          // var pos2 = parseInt(img2.getAttribute('data-pos'));
-          // img1.setAttribute('data-pos',pos2);
-          // img2.setAttribute('data-pos',pos1);
-          // count.setAttribute('data-col-moves', newCount);
-          // count.textContent = 'moves: ' + newCount;
         }
         // See the section on the DataTransfer object.
         // self.handleDragEnd(e,th);
@@ -117,17 +133,9 @@
       }
 
       self.handleDragEnd=function(e) {
-        alert("working");
-      // this/e.target is the source node.
-      // var id_ = 'columns-full';
-      // var cols_ = document.querySelectorAll('#' + id_ + ' .columns');
-      // console.log(cols_.length);
-      //   [].forEach.call(cols_, function (col) {
-      //     col.removeClassName('over');
-      //     col.removeClassName('moving');
-      //     col.style.opacity ='1';
-      //   });
-    }
+          self.$dropper.removeClass('moving');
+          self.$dropper.css('opacity','1');
+      }
 
 
 
