@@ -60,6 +60,14 @@
           return self.prev;
         }
 
+        self.correct = function(){
+          self.$dropper.css('border','2px solid green');
+        }
+
+        self.incorrect = function(){
+          self.$dropper.css('border','2px solid red');
+        }
+
 
 
         self.handleStart=function(e){

@@ -116,7 +116,9 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     var gameSubmitted = function (){
 
       calculateScore();
+      console.log('entering');
       self.timer.stop();
+      self.counter.increment();
       self.$feedback.addClass('h5p-show');
       self.$progressBar.$scoreBar.addClass('h5p-show');
       //stop timer
@@ -131,11 +133,41 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
             // alert(element.getPos()+'on'+element.getSequenceNo());
             if(element.getPos() == element.getSequenceNo()){
               score++;
+              element.correct();
+            }
+            else{
+              element.incorrect();
             }
 
         });
       self.$progressBar.setScore(score);
 
+      feedbackMessage= getFeedbackMessage((score/level)*100);
+
+      self.$feedback.html(feedbackMessage);
+
+    }
+
+    var getFeedbackMessage = function(performance){
+
+      switch (true) {
+        case (performance<25):
+            msg="Poor Effort";
+          break;
+          case performance<50:
+              msg="Keep Trying";
+            break;
+            case performance<75:
+                msg="Almost There";
+              break;
+              case performance<100:
+                  msg="Close To Victory";
+                break;
+        default:
+            msg="Excellent..";
+
+      }
+      return msg;
     }
 
     var reattach = function() {
@@ -153,9 +185,8 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
             self.$feedback.appendTo(self.$wrapper);
             self.$progressBar.appendTo(self.$wrapper);
             self.$status.appendTo(self.$wrapper);
-            self.$submit.appendTo(self.$wrapper).on('click', function(e) {
-                gameSubmitted()
-            });
+            self.$submit = H5P.JoubelUI.createButton({title: 'Submit', click: function (event) { gameSubmitted(); },html:'Submit'});
+            self.$submit.appendTo(self.$wrapper);
 
         }
     }
@@ -179,14 +210,18 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
             self.$progressBar.$scoreBar.addClass("h5p-feedback");
             self.$feedback.appendTo($container);
             self.$status = $('<dl class="h5p-status">' + '<dt>Time Spent</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
-                '<dt>Drags:</dt>' + '<dd class="h5p-card-turns">0</dd>' + '</dl>');
+                '<dt>Total Submits:</dt>' + '<dd class="h5p-submits">0</dd>' + '</dl>');
             self.$status.appendTo($container);
-            self.$submit = $('<button type="button" class="h5p-submit">Submit</button>').on('click', function(e) {
-                gameSubmitted()
-            });
+            self.$submit = H5P.JoubelUI.createButton({title: 'Submit', click: function (event) { gameSubmitted(); },html:'Submit'});
+            self.$submit.appendTo($container);
+
+
+            // $('<button type="button" class="h5p-submit">Submit</button>').on('click', function(e) {
+            //     gameSubmitted()
+            // });
             self.$submit.appendTo($container);
             self.timer = new ImageSequencing.Timer(self.$status.find('.h5p-time-spent')[0]);
-            self.counter = new ImageSequencing.Counter(self.$status.find('.h5p-card-turns'));
+            self.counter = new ImageSequencing.Counter(self.$status.find('.h5p-submits'));
         }
     }
 
