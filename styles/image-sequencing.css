@@ -152,6 +152,22 @@ figure img { border: 1px solid #ccc; }
     transform: scale(1,1) rotate(0deg);
   }
 
+   .h5p-status {
+    padding: 0 1em;
+    margin: 0.25em 0 1em 0;
+  }
+  .h5p-status > dt {
+    margin: 0 1em 0 0;
+    font-weight: bold;
+  }
+ .h5p-status > dt:after {
+    content: ":";
+  }
+   .h5p-status > dd {
+    margin: 0;
+  }
+
+
   .correct{
     border:2px solid green;
   }
@@ -160,5 +176,5 @@ figure img { border: 1px solid #ccc; }
   }
 
   .imageHolder{
-    
+
   }
