@@ -1,69 +1,42 @@
 (function(ImageSequencing, EventDispatcher, $) {
 
 
-    ImageSequencing.Image = function(image, id, pos,seq_no, description,level) {
+    ImageSequencing.Image = function(image,id,seq_no,description) {
 
         var self = this;
         EventDispatcher.call(self);
 
         var path = H5P.getPath(image.path, id);
-        var width, height, margin, $card;
-
-        if (image.width !== undefined && image.height !== undefined) {
-            if (image.width > image.height) {
-                width = '100%';
-                height = 'auto';
-            } else {
-                height = '100%';
-                width = 'auto';
-            }
-        } else {
-            width = height = '100%';
-        }
-
-
-        self.drop = function() {
-            $image.addClass('h5p-drag');
-            self.trigger('drop');
-        };
-
-
-        self.dropBack = function() {
-            $image.removeClass('h5p-drag');
-        };
-
-        /**
-         * Remove.
-         */
-        self.remove = function() {
-            $image.addClass('h5p-matched');
-        };
-
-        /**
-         * Reset card to natural state
-         */
-        self.reset = function() {
-            $image.classList.remove('h5p-drag', 'h5p-matched');
-        };
-
+        var seq_no = seq_no;
+        var description = description;
+        var moves=0;
 
         self.getDescription = function() {
             return description;
         };
 
+        self.setPos = function(pos){
+          self.pos=pos;
+        }
+
+        self.getMoves= function(){
+          return moves;
+        }
+
+        self.setMoves = function(){
+          moves++;
+        }
 
         self.getImage = function() {
             return $image.find('img').clone();
         };
 
         self.getPos = function() {
-          // alert(self.$dropper.find('img').attr('data-pos'));
-          return self.$dropper.find('img').attr('data-pos');
-          // return img.getAttribute('data-pos');
+          return self.pos;
         }
 
         self.getSequenceNo = function() {
-          return self.$dropper.find('img').attr('data-id');
+          return seq_no;
         };
         self.correct= function(){
           self.$dropper.removeClass('incorrect');
@@ -74,57 +47,88 @@
           self.$dropper.addClass('incorrect');
         }
 
-        Element.prototype.hasClassName = function(name) {
-        return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
-      };
-
-      Element.prototype.addClassName = function(name) {
-        if (!this.hasClassName(name)) {
-          this.className = this.className ? [this.className, name].join(' ') : name;
+        self.setNext = function(image){
+          self.next=image;
         }
-      };
-
-      Element.prototype.removeClassName = function(name) {
-        if (this.hasClassName(name)) {
-          var c = this.className;
-          this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
+        self.setPrev = function(image){
+          self.prev=image;
         }
-      };
+        self.getNext = function(){
+          return self.next;
+        }
+        self.getPrevious = function(){
+          return self.prev;
+        }
+
+        self.correct = function(){
+          self.$dropper.css('border','2px solid green');
+        }
+
+        self.incorrect = function(){
+          self.$dropper.css('border','2px solid red');
+        }
 
 
 
-        self.handleStart=function(e,th){
-          th.style.opacity = '0.4';  // this / e.target is the source node.
-          dragSrcEl_ = th;
-          th.
-          srcImg_=this;
-          // console.log(self.seq_no);
-          th.addClassName('moving');
+        self.handleStart=function(e){
+          self.$dropper.css('opacity','0.4');
+          dragSrcEl_ = self;
+          self.$dropper.addClass('moving');
           e.originalEvent.dataTransfer.effectAllowed = 'move';
-          e.originalEvent.dataTransfer.setData('text/html', th.innerHTML);
+          //e.originalEvent.dataTransfer.setData('pos',self.pos);
+          e.originalEvent.dataTransfer.setData('src',self);
           self.trigger('drag');
         }
 
-        self.handleDragEnter=function(e,th) {
-          // this / e.target is the current hover target.
-          th.classList.add('over');
+        self.handleDragEnter=function(e) {
+
+           self.$dropper.addClass('over');
+          if (dragSrcEl_.pos != self.pos) {
+             var i= self.pos;
+             var move=Math.abs(dragSrcEl_.pos) - self.pos;
+             var current=self;
+             if(move>0){
+               //dir=righ
+               while(current != undefined && move !=0){
+                 next=current.getNext();
+                 current.pos+=1;
+                 current=next;
+                 move--;
+               }
+             }
+             else{
+               while(current != undefined && move !=0){
+                 prev=current.getPrevious();
+                 current.pos-=1;
+                 current=prev;
+                 move++;
+               }
+             }
+
+               dragSrcEl_.pos=i - (i * 2);
+             self.trigger('reattach');
+
+           }
+
           }
 
         self.handleDragOver=function(e) {
           if (e.preventDefault) {
-          e.preventDefault(); // Necessary. Allows us to drop.
+          e.preventDefault();
           }
+
+
 
           e.originalEvent.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
 
           return false;
           }
 
-          self.handleDragLeave=function(e,th) {
-            th.classList.remove('over');  // this / e.target is previous target element.
+          self.handleDragLeave=function(e) {
+            self.$dropper.removeClass('over');  // this / e.target is previous target element.
           }
 
-        self.handleDrop=function(e,th) {
+        self.handleDrop=function(e) {
         // this / e.target is current target element.
 
 
@@ -132,89 +136,43 @@
           e.preventDefault(); // stops the browser from redirecting.
         }
 
+        self.$dropper.removeClass('over');
+        if (dragSrcEl_.pos != self.pos) {
 
-        if (dragSrcEl_ != th) {
-
-          // Set the source column's HTML to the HTML of the column we dropped on.
-          dragSrcEl_.innerHTML = th.innerHTML;
-          th.innerHTML = e.originalEvent.dataTransfer.getData('text/html');
-          var count = th.querySelector('.count');
-          var newCount = parseInt(count.getAttribute('data-col-moves')) + 1;
-          var img1 = th.querySelector('img');
-          var pos1 = parseInt(img1.getAttribute('data-pos'));
-          var img2 = dragSrcEl_.querySelector('img');
-          var pos2 = parseInt(img2.getAttribute('data-pos'));
-          img1.setAttribute('data-pos',pos2);
-          img2.setAttribute('data-pos',pos1);
-          count.setAttribute('data-col-moves', newCount);
-          count.textContent = 'moves: ' + newCount;
+          //dragSrcEl_.pos=e.originalEvent.dataTransfer.getData('pos');
+          //self.trigger('reattach');
+          //dragSrcEl_.pos=self.pos;
         }
         // See the section on the DataTransfer object.
-        self.handleDragEnd(e,th);
+        // self.handleDragEnd(e,th);
         return false;
       }
 
-      self.handleDragEnd=function(e,th) {
-      // this/e.target is the source node.
-      var id_ = 'columns-full';
-      var cols_ = document.querySelectorAll('#' + id_ + ' .columns');
-      console.log(cols_.length);
-        [].forEach.call(cols_, function (col) {
-          col.removeClassName('over');
-          col.removeClassName('moving');
-          col.style.opacity ='1';
-        });
-    }
+      self.handleDragEnd=function(e) {
+          self.$dropper.removeClass('moving');
+          self.$dropper.css('opacity','1');
+      }
 
 
 
 
-        self.appendTo = function($container) {
-            var width  = ImageSequencing.calculate($container.width());
-            $dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:0</header><div>\
-            <img src="' + path + '" data-pos="'+pos+'" data-id="'+seq_no+'""  alt="Sequence Image Card" \
-             width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
-            self.$dropper=$dropper;
-            $dropper.on('dragstart',function(e){self.handleStart(e,this)});
-            $dropper.on('dragenter',function(e){self.handleDragEnter(e,this)});
-            $dropper.on('dragover',function(e){self.handleDragOver(e)});
-            $dropper.on('dragleave',function(e){self.handleDragLeave(e,this)});
-            $dropper.on('drop',function(e){self.handleDrop(e,this)});
-            $dropper.on('dragend',function(e){self.handleDragEnd(e,this)});
-
+        self.appendTo = function($container,width) {
+            self.$dropper = $('<div class="columns" width="'+width[0]+'px" height="'+width[0]+'px" draggable="true"><header class="count" data-col-moves="0">moves:'+self.getMoves()+'</header><div>\
+            <img src="' + path + '"  alt="Sequence Image Card" width="'+width[1]+'px" height="'+width[1]+'px" drggable="true"/></div></div>').appendTo($container);
+            self.$dropper.on('dragstart',function(e){self.handleStart(e)});
+            self.$dropper.on('dragenter',function(e){self.handleDragEnter(e)});
+            self.$dropper.on('dragover',function(e){self.handleDragOver(e)});
+            self.$dropper.on('dragleave',function(e){self.handleDragLeave(e)});
+            self.$dropper.on('drop',function(e){self.handleDrop(e)});
+            self.$dropper.on('dragend',function(e){self.handleDragEnd(e)});
         };
-
-        /**
-         * Re-append to parent container
-         */
-        // self.reAppend = function() {
-        //     var parent = $Image[0].parentElement.parentElement;
-        //     parent.appendChild($Image[0].parentElement);
-        // };
     };
 
-    // Extends the event dispatcher
     ImageSequencing.Image.prototype = Object.create(EventDispatcher.prototype);
     ImageSequencing.Image.prototype.constructor = ImageSequencing.Image;
 
-    /**
-     * Check to see if the given object corresponds with the semantics for
-     * a memory game Image.
-     *
-     * @param {object} params
-     * @returns {boolean}
-     */
-     ImageSequencing.Image.isValid = function(params) {
-        return (params !== undefined &&
-            params.image !== undefined &&
-            params.image.path !== undefined);
+    ImageSequencing.Image.isValid = function(params) {
+        return (params !== undefined && params.image !== undefined && params.image.path !== undefined);
     };
-
-
-    // ImageSequencing.Card.hasTwoImages = function(params) {
-    //     return (params !== undefined &&
-    //         params.match !== undefined &&
-    //         params.match.path !== undefined);
-    // };
 
 })(H5P.ImageSequencing, H5P.EventDispatcher, H5P.jQuery);
