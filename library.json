@@ -18,9 +18,6 @@
       "path": "scripts/image-sequencing.js"
     },
     {
-      "path": "scripts/jquery-ui.js"
-    },
-    {
       "path": "scripts/image.js"
     },
     {
@@ -28,9 +25,6 @@
     },
     {
       "path": "scripts/counter.js"
-    },
-    {
-      "path": "scripts/popup.js"
     },
     {
       "path": "scripts/timer.js"

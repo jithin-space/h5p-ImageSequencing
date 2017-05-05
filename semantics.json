@@ -8,28 +8,83 @@
     "min": 3,
     "max": 7,
     "field": {
-      "type": "group",
+      "type": "image",
       "name": "image",
       "label": "Image",
-      "importance": "high",
-      "fields": [
-        {
-          "name": "image",
-          "type": "image",
-          "label": "Image",
-          "importance": "high"
-        },
-        {
-          "name": "description",
-          "type": "text",
-          "label": "Description",
-          "importance": "low",
-          "maxLength": 150,
-          "optional": true,
-          "description": "An optional short text that will pop up when the image is dropped in correct dropzone"
-        }
-      ]
+      "importance": "high"
     }
+  },
+  {
+    "label": "Localization",
+    "importance": "low",
+    "name": "l10n",
+    "type": "group",
+    "common": true,
+    "fields": [
+      {
+        "label": "Total Submits text",
+        "importance": "low",
+        "name": "totalSubmits",
+        "type": "text",
+        "default": "Total Submits"
+      },
+      {
+        "label": "Time spent text",
+        "importance": "low",
+        "name": "timeSpent",
+        "type": "text",
+        "default": "Time spent"
+      },
+      {
+        "label": "Feedback texts",
+        "importance": "low",
+        "name": "feedbacks",
+        "type": "group",
+        "fields": [
+          {
+            "label": "Poor Performance Feedback",
+            "importance": "low",
+            "name": "poorEffort",
+            "type": "text",
+            "default": "Poor Effort.."
+          },
+          {
+            "label": "Keep Trying Feedback",
+            "importance": "low",
+            "name": "keepTrying",
+            "type": "text",
+            "default": "Keep Trying.."
+          },
+          {
+            "label": "Almost There Feedback",
+            "importance": "low",
+            "name": "almostThere",
+            "type": "text",
+            "default": "Almost There.."
+          },
+          {
+            "label": "Close To Victory Feedback",
+            "importance": "low",
+            "name": "closeToVictory",
+            "type": "text",
+            "default": "Close To Victory..."
+          },
+          {
+            "label": "Success Feedback",
+            "importance": "low",
+            "name": "successFeedback",
+            "type": "text",
+            "default": "Excellent..."
+          }
+        ]
+      },
+      {
+        "label": "Moves Button Text",
+        "importance": "low",
+        "name": "moves",
+        "type": "text",
+        "default": "Moves"
+      }
+    ]
   }
-
 ]
