@@ -1,89 +1,107 @@
 [
   {
-    "name": "sequenceimages",
-    "type": "list",
-    "label": "Images",
-    "importance": "high",
-    "entity": "image",
-    "min": 3,
-    "max": 7,
-    "field": {
-      "type": "image",
-      "name": "image",
-      "label": "Image",
-      "importance": "high"
+    "name":"sequenceimages",
+    "type":"list",
+    "label":"Images",
+    "importance":"high",
+    "entity":"image",
+    "min":3,
+    "max":7,
+    "field":{
+      "type":"group",
+      "name":"imageElement",
+      "label":"Image Element",
+      "importance":"high",
+      "fields":[
+        {
+          "name":"image",
+          "type":"image",
+          "label":"Image",
+          "importance":"high",
+          "ratio":1
+        },
+        {
+          "name":"imageDescription",
+          "type":"text",
+          "label":"Image Description",
+          "importance":"high",
+          "maxLength":150,
+          "description":"An image description if they cannot recognize the image",
+          "ratio":1
+        }
+      ]
     }
   },
   {
-    "label": "Localization",
-    "importance": "low",
-    "name": "l10n",
-    "type": "group",
-    "common": true,
-    "fields": [
+    "label":"Localization",
+    "importance":"low",
+    "name":"l10n",
+    "type":"group",
+    "common":true,
+    "fields":[
       {
-        "label": "Total Submits text",
-        "importance": "low",
-        "name": "totalSubmits",
-        "type": "text",
-        "default": "Total Submits"
+        "label":"Total Moves text",
+        "importance":"low",
+        "name":"totalMoves",
+        "type":"text",
+        "default":"Total Moves"
       },
       {
-        "label": "Time spent text",
-        "importance": "low",
-        "name": "timeSpent",
-        "type": "text",
-        "default": "Time spent"
+        "label":"Time spent text",
+        "importance":"low",
+        "name":"timeSpent",
+        "type":"text",
+        "default":"Time spent"
       },
       {
-        "label": "Feedback texts",
-        "importance": "low",
-        "name": "feedbacks",
-        "type": "group",
-        "fields": [
+        "label":"Feedback texts",
+        "importance":"low",
+        "name":"feedbacks",
+        "type":"group",
+        "fields":[
           {
-            "label": "Poor Performance Feedback",
-            "importance": "low",
-            "name": "poorEffort",
-            "type": "text",
-            "default": "Poor Effort.."
+            "label":"Poor Performance Feedback",
+            "importance":"low",
+            "name":"poorEffort",
+            "type":"text",
+            "default":"Poor Effort.."
           },
           {
-            "label": "Keep Trying Feedback",
-            "importance": "low",
-            "name": "keepTrying",
-            "type": "text",
-            "default": "Keep Trying.."
+            "label":"Keep Trying Feedback",
+            "importance":"low",
+            "name":"keepTrying",
+            "type":"text",
+            "default":"Keep Trying.."
           },
           {
-            "label": "Almost There Feedback",
-            "importance": "low",
-            "name": "almostThere",
-            "type": "text",
-            "default": "Almost There.."
+            "label":"Almost There Feedback",
+            "importance":"low",
+            "name":"almostThere",
+            "type":"text",
+            "default":"Almost There.."
           },
           {
-            "label": "Close To Victory Feedback",
-            "importance": "low",
-            "name": "closeToVictory",
-            "type": "text",
-            "default": "Close To Victory..."
+            "label":"Close To Victory Feedback",
+            "importance":"low",
+            "name":"closeToVictory",
+            "type":"text",
+            "default":"Close To Victory..."
           },
           {
-            "label": "Success Feedback",
-            "importance": "low",
-            "name": "successFeedback",
-            "type": "text",
-            "default": "Excellent..."
+            "label":"Success Feedback",
+            "importance":"low",
+            "name":"successFeedback",
+            "type":"text",
+            "default":"Excellent..."
           }
         ]
       },
       {
-        "label": "Moves Button Text",
-        "importance": "low",
-        "name": "moves",
-        "type": "text",
-        "default": "Moves"
+        "label":"Dropper Text",
+        "importance":"low",
+        "name":"dropperText",
+        "type":"text",
+        "default":"Please Drop"
       }
     ]
   }
