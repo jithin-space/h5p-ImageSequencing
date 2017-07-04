@@ -1,12 +1,20 @@
 [
   {
-    "name":"sequenceimages",
+    "label":"Task Description",
+    "name":"taskDescription",
+    "type":"text",
+    "default":"Drag to arrange the images in the correct sequence",
+    "description":"A guide telling the user how to solve this task.",
+    "importance":"high"
+  },
+  {
+    "name":"sequenceImages",
     "type":"list",
     "label":"Images",
     "importance":"high",
     "entity":"image",
     "min":3,
-    "max":7,
+    "max":9,
     "field":{
       "type":"group",
       "name":"imageElement",
@@ -23,9 +31,9 @@
         {
           "name":"imageDescription",
           "type":"text",
-          "label":"Image Description",
+          "label":"Image Description (At Max 30 char)",
           "importance":"high",
-          "maxLength":150,
+          "maxLength":30,
           "description":"An image description if they cannot recognize the image",
           "ratio":1
         }

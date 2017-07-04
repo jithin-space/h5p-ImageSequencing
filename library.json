@@ -18,19 +18,13 @@
       "path":"scripts/image-sequencing.js"
     },
     {
-      "path":"scripts/image.js"
-    },
-    {
-      "path":"scripts/dropper.js"
+      "path":"scripts/card.js"
     },
     {
       "path":"scripts/counter.js"
     },
     {
       "path":"scripts/timer.js"
-    },
-    {
-      "path":"scripts/linkedList.js"
     }
   ],
   "preloadedDependencies":[
@@ -40,9 +34,20 @@
       "minorVersion":4
     },
     {
+      "machineName":"FontAwesome",
+      "majorVersion":4,
+      "minorVersion":5
+    },
+    {
       "machineName":"H5P.JoubelUI",
       "majorVersion":1,
       "minorVersion":2
+    },
+    {
+      "machineName":"jQuery.ui",
+      "majorVersion":1,
+      "minorVersion":10,
+      "defaultStyles":true
     }
   ]
 }
