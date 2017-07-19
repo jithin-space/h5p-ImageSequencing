@@ -34,6 +34,7 @@
     margin: 0;
     padding: 5px 0;
 }
+
 .sequencing-correct {
     border: solid 2px #47b47d !important;
     position: relative;
@@ -71,6 +72,7 @@
     content: "\f00d";
     font-family: H5PFontAwesome4;
 }
+
 .h5p-image-sequencing {
     max-width: 71.250em;
     width: auto;
@@ -86,22 +88,27 @@
     line-height: 1.125em;
     padding: 0.417em;
 }
+
+
 .sequencing-item {
     width: 9.5em;
     padding: 0.417em;
-    height: 13.542em;
+    height: 12.542em;
     float: left;
+    display: inline-block;
     border-radius: 0.4em 0.4em 0.4em 0.4em;
     margin: 0.5em;
     cursor: pointer;
     border: solid 2px #dbe2e8;
-    position: relative;
+
 }
+
 .draggabled {
     -webkit-box-shadow: 2px 2px 0px 2px rgba(203, 213, 222, 0.2);
     -moz-box-shadow: 2px 2px 0px 2px rgba(203, 213, 222, 0.2);
     box-shadow: 2px 2px 0px 2px rgba(203, 213, 222, 0.2);
 }
+
 .draggabled .image-container {
     width: 9.5em;
     height: 10em;
@@ -109,6 +116,16 @@
     -moz-box-shadow: inset 0px 2px 74px 0px rgba(203, 213, 222, 1);
     box-shadow: inset 0px 2px 74px 0px rgba(203, 213, 222, 1);
     position: relative;
+}
+.draggabled .image-desc{
+  text-align: center;
+  vertical-align: middle;
+  height:2em;
+  position: relative;
+  font-family: H5PFontAwesome4;
+  font-size:0.9em;
+	margin:0.3em;
+
 }
 .draggabled .image-container img {
     display: inline-block !important;
@@ -141,7 +158,7 @@
 .sequencing-dropzone {
     width: 9.5em;
     padding: 0.417em;
-    height: 13.542em;
+    height: 12.542em;
     float: left;
     border-radius: 0.4em 0.4em 0.4em 0.4em;
     margin: 0.5em;

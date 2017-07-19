@@ -75,10 +75,10 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       for (var i = 0; i < order.length; i++) {
         if (i == order[i].split('_')[1]) {
           score++;
-          setCorrect($list.find('#' + order[i]).find('.sequencing-item'));
+          setCorrect($list.find('#' + order[i]));
 
         } else {
-          setIncorrect($list.find('#' + order[i]).find('.sequencing-item'));
+          setIncorrect($list.find('#' + order[i]));
         }
       }
       self.$progressBar.setScore(score); //set the score on the progressBar
@@ -176,6 +176,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         });
         self.$submit.appendTo($container);
       }
+      // $list.sortable();
       //make the list sortable using jquery ui sortable
       $list.sortable({
         placeholder: "sequencing-dropzone",
