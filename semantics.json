@@ -32,7 +32,7 @@
           "name":"imageDescription",
           "type":"text",
           "label":"Image Description (At Max 30 char)",
-          "importance":"high",
+          "importance":"low",
           "maxLength":30,
           "description":"An image description if they cannot recognize the image",
           "ratio":1
@@ -62,54 +62,33 @@
         "default":"Time spent"
       },
       {
-        "label":"Feedback texts",
-        "importance":"low",
-        "name":"feedbacks",
-        "type":"group",
-        "fields":[
-          {
-            "label":"Poor Performance Feedback",
-            "importance":"low",
-            "name":"poorEffort",
-            "type":"text",
-            "default":"Poor Effort.."
-          },
-          {
-            "label":"Keep Trying Feedback",
-            "importance":"low",
-            "name":"keepTrying",
-            "type":"text",
-            "default":"Keep Trying.."
-          },
-          {
-            "label":"Almost There Feedback",
-            "importance":"low",
-            "name":"almostThere",
-            "type":"text",
-            "default":"Almost There.."
-          },
-          {
-            "label":"Close To Victory Feedback",
-            "importance":"low",
-            "name":"closeToVictory",
-            "type":"text",
-            "default":"Close To Victory..."
-          },
-          {
-            "label":"Success Feedback",
-            "importance":"low",
-            "name":"successFeedback",
-            "type":"text",
-            "default":"Excellent..."
-          }
-        ]
-      },
-      {
         "label":"Dropper Text",
         "importance":"low",
         "name":"dropperText",
         "type":"text",
         "default":"Please Drop"
+      },
+      {
+        "label": "Feedback text",
+        "importance": "low",
+        "name": "score",
+        "type": "text",
+        "default": "You got @score of @total points",
+        "description": "Feedback text, variables available: @score and @total. Example: 'You got @score of @total possible points'"
+      },
+      {
+        "label": "Text for \"Check\" button",
+        "importance": "low",
+        "name": "checkAnswer",
+        "type": "text",
+        "default": "Check"
+      },
+      {
+      "label": "Text for \"Retry\" button",
+      "importance": "low",
+      "name": "tryAgain",
+      "type": "text",
+      "default": "Retry"
       }
     ]
   }

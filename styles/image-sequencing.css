@@ -1,8 +1,9 @@
+
 .sequencing-feedback {
     line-height: 1.5em;
     margin-right: 1em;
-    font-size: 2em;
-    visibility: hidden;
+    font-size: 1em;
+    display: none;
     -webkit-transform: scale(0, 0) rotate(90deg);
     -moz-transform: scale(0, 0) rotate(90deg);
     -ms-transform: scale(0, 0) rotate(90deg);
@@ -11,8 +12,17 @@
     -moz-transition: -webkit-transform 0.2s;
     transition: -webkit-transform 0.2s;
 }
+.feedback-element{
+  display: inline-block;
+  margin-left: 0.5em;
+  position:relative;
+  top: -1em;
+  font-weight: bold;
+  color: #1a73d9;
+}
 .sequencing-feedback-show {
-    visibility: visible;
+    display: block;
+    max-height: 3.14em;
     -webkit-transform: scale(1, 1) rotate(0deg);
     -moz-transform: scale(1, 1) rotate(0deg);
     -ms-transform: scale(1, 1) rotate(0deg);

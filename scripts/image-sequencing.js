@@ -1,5 +1,5 @@
 var H5P = H5P || {};
-H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
+H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
 
   /**
    * Image Sequencing Constructor
@@ -82,22 +82,25 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         }
       }
       self.$progressBar.setScore(score); //set the score on the progressBar
-      var feedbackMessage = getFeedbackMessage((score / (order.length - 1)) * 100, parameters.l10n.feedbacks); //get the feedback message based on the performance
-      self.$feedback.html(feedbackMessage); //set the feedback to feedbackMessage obtained.
+      var scoreText = parameters.l10n.score;
+      scoreText = scoreText.replace('@score', score).replace('@total', order.length);
+      self.$feedback.html(scoreText); //set the feedback to feedbackMessage obtained.
       self.$submit.hide();
       $list.sortable("disable"); //disable sortable functionality and create the retry button
-      self.$retry = UI.createButton({
-        title: 'Retry',
-        click: function() {
-          self.$wrapper.empty();
-          shuffledCards = shuffleCards(cardsToUse);
-          self.attach(self.$wrapper);
-        },
-        html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>Retry'
-      });
-      self.$retry.appendTo(self.$wrapper);
-      self.$feedback.addClass('sequencing-feedback-show'); //show  feedbackMessage
-      self.$progressBar.$scoreBar.addClass('sequencing-feedback-show'); //show progressBar
+      if(score != order.length){
+        self.$retry = UI.createButton({
+          title: 'Retry',
+          click: function() {
+            self.$wrapper.empty();
+            shuffledCards = shuffleCards(cardsToUse);
+            self.attach(self.$wrapper);
+          },
+          html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;'+ parameters.l10n.tryAgain
+        });
+        self.$retry.appendTo(self.$wrapper);
+      }
+      self.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
+      // self.$progressBar.$scoreBar.addClass('sequencing-feedback-show'); //show progressBar
     }
 
     /*
@@ -158,23 +161,26 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       }
       if ($list.children().length) {
         $list.appendTo($container);
-        self.$feedback = $('<div class="sequencing-feedback"></div>');
+        self.$feedbackContainer=$('<div class="sequencing-feedback"/>');
+        self.$buttonContainer=$('<div class="sequencing-feedback-show" />')
+        self.$feedback = $('<div class="feedback-element"></div>');
         self.$status = $('<dl class="sequencing-status">' + '<dt>' + parameters.l10n.timeSpent + '</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
           '<dt>' + parameters.l10n.totalMoves + '</dt>' + '<dd class="h5p-submits">0</dd>' + '</dl>');
         self.$status.appendTo($container);
         self.$progressBar = UI.createScoreBar(shuffledCards.length - 1, 'scoreBarLabel');
-        self.$progressBar.appendTo($container);
-        self.$progressBar.$scoreBar.addClass("sequencing-feedback");
-        self.$feedback.appendTo($container);
+        self.$progressBar.appendTo(self.$feedbackContainer);
+        self.$feedback.appendTo(self.$feedbackContainer);
+        self.$feedbackContainer.appendTo($container);
         self.$submit = UI.createButton({
           title: 'Submit',
           click: function(event) {
             var order = $list.sortable("toArray");
             gameSubmitted(order, $list);
           },
-          html: '<span><i class="fa fa-check" aria-hidden="true"></i></span>Check'
+          html: '<span><i class="fa fa-check" aria-hidden="true"></i></span>&nbsp;'+ parameters.l10n.checkAnswer
         });
-        self.$submit.appendTo($container);
+        self.$submit.appendTo(self.$buttonContainer);
+        self.$buttonContainer.appendTo($container);
       }
       // $list.sortable();
       //make the list sortable using jquery ui sortable
@@ -210,4 +216,4 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
   ImageSequencing.prototype = Object.create(EventDispatcher.prototype);
   ImageSequencing.prototype.constructor = ImageSequencing;
   return ImageSequencing;
-})(H5P.EventDispatcher, H5P.jQuery, H5P.JoubelUI);
+})(H5P.EventDispatcher,H5P.jQuery, H5P.JoubelUI);
