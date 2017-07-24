@@ -52,7 +52,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
     var setCorrect = function($item) {
       $item.removeClass('sequencing-incorrect').addClass('sequencing-correct');
       $item.find('.sequencing-mark').removeClass('sequencing-incorrect-mark').addClass('sequencing-correct-mark');
-    }
+    };
 
     /*
     * assign the incorrectly positioned card with class incorrect
@@ -61,7 +61,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
     var setIncorrect = function($item) {
       $item.removeClass('sequencing-correct').addClass('sequencing-incorrect');
       $item.find('.sequencing-mark').removeClass('sequencing-correct-mark').addClass('sequencing-incorrect-mark');
-    }
+    };
 
     /*
     * when user clicks the check button
@@ -90,6 +90,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
       if(score != order.length){
         self.$retry = UI.createButton({
           title: 'Retry',
+          'class': 'h5p-image-sequencing-retry',
           click: function() {
             self.$wrapper.empty();
             shuffledCards = shuffleCards(cardsToUse);
@@ -98,10 +99,11 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
           html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;'+ parameters.l10n.tryAgain
         });
         self.$retry.appendTo(self.$wrapper);
+        self.trigger('resize');
       }
       self.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
       // self.$progressBar.$scoreBar.addClass('sequencing-feedback-show'); //show progressBar
-    }
+    };
 
     /*
     * shuffle the cards before the game starts or restarts
@@ -125,7 +127,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
       }
 
       return shuffledCards;
-    }
+    };
 
     /*
     * Initialize the cards to be used in the game
@@ -136,12 +138,11 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
         var cardParams = parameters.sequenceImages[i];
         if (ImageSequencing.Card.isValid(cardParams)) {
           var card = new ImageSequencing.Card(cardParams.image, id, i, cardParams.imageDescription);
+          cardsToUse.push(card);
         }
-        cardsToUse.push(card);
-
       }
       return cardsToUse;
-    }
+    };
 
     var cardsToUse = getCardsToUse();
     var shuffledCards = shuffleCards(cardsToUse);
@@ -162,7 +163,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
       if ($list.children().length) {
         $list.appendTo($container);
         self.$feedbackContainer=$('<div class="sequencing-feedback"/>');
-        self.$buttonContainer=$('<div class="sequencing-feedback-show" />')
+        self.$buttonContainer=$('<div class="sequencing-feedback-show" />');
         self.$feedback = $('<div class="feedback-element"></div>');
         self.$status = $('<dl class="sequencing-status">' + '<dt>' + parameters.l10n.timeSpent + '</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
           '<dt>' + parameters.l10n.totalMoves + '</dt>' + '<dd class="h5p-submits">0</dd>' + '</dl>');

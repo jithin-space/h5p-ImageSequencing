@@ -8,6 +8,7 @@
   "author":"Jithin Thankachan",
   "license":"MIT",
   "machineName":"H5P.ImageSequencing",
+  "embedTypes": ["iframe"],
   "preloadedCss":[
     {
       "path":"styles/image-sequencing.css"

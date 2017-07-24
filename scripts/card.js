@@ -18,20 +18,6 @@
     var path = H5P.getPath(image.path, id);
     var seqNo = seqNumber;
     var description = imageDescription;
-    /*
-     * set the image cards dimensions
-     */
-    if (image.width !== undefined && image.height !== undefined) {
-      if (image.width > image.height) {
-        width = '100%';
-        height = 'auto';
-      } else {
-        height = '100%';
-        width = 'auto';
-      }
-    } else {
-      width = height = '100%';
-    }
 
     var html = (description !== undefined) ? description : '';
 
@@ -46,7 +32,7 @@
       $card = $('<li class="sequencing-item draggabled" id="item_' + seqNumber + '">'+
         '<span class="sequencing-mark"></span>' +
         '<div class="image-container">' +
-        '<img src="' + path + '" alt="Memory Card" width=' + width + ' height=' + height + '/>' +
+        '<img src="' + path + '" alt="Memory Card"/>' +
         '</div>' +
         '<div class="image-desc">'+
           '<span class="text">'+html+'</span>'+
