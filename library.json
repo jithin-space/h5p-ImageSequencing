@@ -8,23 +8,24 @@
   "author":"Jithin Thankachan",
   "license":"MIT",
   "machineName":"H5P.ImageSequencing",
+  "embedTypes": ["iframe"],
   "preloadedCss":[
     {
-      "path":"styles/image-sequencing.css"
+      "path":"styles/h5p-image-sequencing.css"
     }
   ],
   "preloadedJs":[
     {
-      "path":"scripts/image-sequencing.js"
+      "path":"scripts/h5p-image-sequencing.js"
     },
     {
-      "path":"scripts/card.js"
+      "path":"scripts/h5p-image-sequencing-card.js"
     },
     {
-      "path":"scripts/counter.js"
+      "path":"scripts/h5p-image-sequencing-counter.js"
     },
     {
-      "path":"scripts/timer.js"
+      "path":"scripts/h5p-image-sequencing-timer.js"
     }
   ],
   "preloadedDependencies":[
