@@ -28,23 +28,14 @@
      * @param {H5P.jQuery} $container
      */
     self.appendTo = function($container) {
-        // $('<li class="ui-state-default" style="margin: 3px 3px 3px 0; padding: 1px; float: left; width: 100px; height: 90px; font-size: 4em; text-align: center;">'+i+'</li>').appendTo($list);
-      $card = $('<li class="sequencing-item draggabled" id="item_' + seqNumber + '">'+
+      $card = $('<li class="sequencing-item draggabled" id="item_' + seqNumber + '">' +
         '<span class="sequencing-mark"></span>' +
         '<div class="image-container">' +
-        '<img src="' + path + '" alt="Memory Card"/>' +
+        '<img src="' + path + '" alt="' + description + '"/>' +
         '</div>' +
-        '<div class="image-desc">'+
-          '<span class="text">'+html+'</span>'+
+        '<div class="image-desc">' +
+        '<span class="text">' + html + '</span>' +
         '</div></li>').appendTo($container);
-      // $card= $('<li class="sequencing-item draggabled" id="item_' + seqNumber + '">'+
-      //           '<span class="sequencing-mark"></span>' +
-      //           '<div class="image-container">' +
-      //           '<img src="' + path + '" alt="Memory Card" width=' + width + ' height=' + height + '/>' +
-      //           '</div>' +
-      //           '<span class="text">' + html + '</span></li>').appendTo($container);
-
-      // $card = $('<li class="ui-state-default" style="margin: 3px 3px 3px 0; padding: 1px; float: left; width: 100px; height: 90px; font-size: 4em; text-align: center;">six</li>').appendTo($container);
     };
 
   };

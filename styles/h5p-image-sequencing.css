@@ -126,6 +126,7 @@
   line-height: 1.2;
   font-size:0.9em;
 	margin-top: 0.4em;
+  text-align: center;
 }
 .draggabled .image-container img {
     height: auto;
@@ -158,11 +159,11 @@
     height: 12.542em;
     float: left;
     border-radius: 0.4em 0.4em 0.4em 0.4em;
-    margin: 0.5em;
+    margin: 0 1em 1em 0;
     cursor: pointer;
     border: solid 2px #dbe2e8;
     background-color: #dcf6ff;
-    border: dashed 0.15em #5c9adf;
+    border: dashed 2px #5c9adf;
 }
 
 .h5p-image-sequencing-retry.h5p-joubelui-button {

@@ -1,5 +1,5 @@
 var H5P = H5P || {};
-H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
+H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
 
   /**
    * Image Sequencing Constructor
@@ -16,58 +16,29 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
     // Initialize event inheritance
     EventDispatcher.call(self);
 
-    /**
-     * Get the Feedback Message Based On Score
-     *
-     * @param {number} performance
-     * @param {H5P.jQuery} $feedbacks
-     * @return {String} msg
-     */
-
-    var getFeedbackMessage = function(performance, $feedbacks) {
-      var msg = "";
-      switch (true) {
-        case (performance < 25):
-          msg = $feedbacks.poorEffort;
-          break;
-        case performance < 50:
-          msg = $feedbacks.keepTrying;
-          break;
-        case performance < 75:
-          msg = $feedbacks.almostThere;
-          break;
-        case performance < 100:
-          msg = $feedbacks.closeToVictory;
-          break;
-        default:
-          msg = $feedbacks.successFeedback;
-      }
-      return msg;
-    };
-
     /*
-    * assign the correctly positioned card with class correct
-    * @param {H5P.jQuery} $item
-    */
+     * assign the correctly positioned card with class correct
+     * @param {H5P.jQuery} $item
+     */
     var setCorrect = function($item) {
       $item.removeClass('sequencing-incorrect').addClass('sequencing-correct');
       $item.find('.sequencing-mark').removeClass('sequencing-incorrect-mark').addClass('sequencing-correct-mark');
     };
 
     /*
-    * assign the incorrectly positioned card with class incorrect
-    * @param {H5P.jQuery} $item
-    */
+     * assign the incorrectly positioned card with class incorrect
+     * @param {H5P.jQuery} $item
+     */
     var setIncorrect = function($item) {
       $item.removeClass('sequencing-correct').addClass('sequencing-incorrect');
       $item.find('.sequencing-mark').removeClass('sequencing-correct-mark').addClass('sequencing-incorrect-mark');
     };
 
     /*
-    * when user clicks the check button
-    *@param {Array} order
-    *@param {H5P.jQuery} $item
-    */
+     * when user clicks the check button
+     *@param {Array} order
+     *@param {H5P.jQuery} $item
+     */
     var gameSubmitted = function(order, $list) {
       self.isSubmitted = true;
       self.timer.stop();
@@ -87,7 +58,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
       self.$feedback.html(scoreText); //set the feedback to feedbackMessage obtained.
       self.$submit.hide();
       $list.sortable("disable"); //disable sortable functionality and create the retry button
-      if(score != order.length){
+      if (score != order.length) {
         self.$retry = UI.createButton({
           title: 'Retry',
           'class': 'h5p-image-sequencing-retry',
@@ -96,7 +67,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
             shuffledCards = shuffleCards(cardsToUse);
             self.attach(self.$wrapper);
           },
-          html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;'+ parameters.l10n.tryAgain
+          html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;' + parameters.l10n.tryAgain
         });
         self.$retry.appendTo(self.$wrapper);
         self.trigger('resize');
@@ -106,10 +77,10 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
     };
 
     /*
-    * shuffle the cards before the game starts or restarts
-    * @param {Array} cardsToUse
-    * @return {Array} shuffledCards
-    */
+     * shuffle the cards before the game starts or restarts
+     * @param {Array} cardsToUse
+     * @return {Array} shuffledCards
+     */
     var shuffleCards = function(cardsToUse) {
       var numCardsToUse = cardsToUse.length;
       var numPicket = 0;
@@ -130,8 +101,8 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
     };
 
     /*
-    * Initialize the cards to be used in the game
-    */
+     * Initialize the cards to be used in the game
+     */
     var getCardsToUse = function() {
       var cardsToUse = [];
       for (var i = 0; i < parameters.sequenceImages.length; i++) {
@@ -162,8 +133,8 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
       }
       if ($list.children().length) {
         $list.appendTo($container);
-        self.$feedbackContainer=$('<div class="sequencing-feedback"/>');
-        self.$buttonContainer=$('<div class="sequencing-feedback-show" />');
+        self.$feedbackContainer = $('<div class="sequencing-feedback"/>');
+        self.$buttonContainer = $('<div class="sequencing-feedback-show" />');
         self.$feedback = $('<div class="feedback-element"></div>');
         self.$status = $('<dl class="sequencing-status">' + '<dt>' + parameters.l10n.timeSpent + '</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
           '<dt>' + parameters.l10n.totalMoves + '</dt>' + '<dd class="h5p-submits">0</dd>' + '</dl>');
@@ -178,12 +149,11 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
             var order = $list.sortable("toArray");
             gameSubmitted(order, $list);
           },
-          html: '<span><i class="fa fa-check" aria-hidden="true"></i></span>&nbsp;'+ parameters.l10n.checkAnswer
+          html: '<span><i class="fa fa-check" aria-hidden="true"></i></span>&nbsp;' + parameters.l10n.checkAnswer
         });
         self.$submit.appendTo(self.$buttonContainer);
         self.$buttonContainer.appendTo($container);
       }
-      // $list.sortable();
       //make the list sortable using jquery ui sortable
       $list.sortable({
         placeholder: "sequencing-dropzone",
@@ -198,7 +168,7 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
       });
       $list.disableSelection(); //for preventing clicks on each sortable element
       self.timer = new ImageSequencing.Timer(self.$status.find('.h5p-time-spent')[0]); //Initialize timer
-      self.counter = new ImageSequencing.Counter(self.$status.find('.h5p-submits'));   //Initialize counter
+      self.counter = new ImageSequencing.Counter(self.$status.find('.h5p-submits')); //Initialize counter
       // capturing the drop event on sortable
       $list.find("li").droppable({
         drop: function(event, ui) {
@@ -217,4 +187,4 @@ H5P.ImageSequencing = (function(EventDispatcher,$, UI) {
   ImageSequencing.prototype = Object.create(EventDispatcher.prototype);
   ImageSequencing.prototype.constructor = ImageSequencing;
   return ImageSequencing;
-})(H5P.EventDispatcher,H5P.jQuery, H5P.JoubelUI);
+})(H5P.EventDispatcher, H5P.jQuery, H5P.JoubelUI);
