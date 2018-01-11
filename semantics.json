@@ -35,7 +35,14 @@
           "maxLength":30,
           "description":"An image description if they cannot recognize the image",
           "ratio":1
-        }
+        },
+        {
+         "name": "audio",
+         "type": "audio",
+         "label": "Audio files",
+         "importance": "low",
+         "optional": true
+       }
       ]
     }
   },
@@ -88,7 +95,15 @@
       "name": "tryAgain",
       "type": "text",
       "default": "Retry"
-      }
+    },
+    {
+  "name": "audioNotSupported",
+  "type": "text",
+  "label": "Audio not supported message",
+  "importance": "low",
+  "common": true,
+  "default": "Audio Error"
+  }
     ]
   }
 ]

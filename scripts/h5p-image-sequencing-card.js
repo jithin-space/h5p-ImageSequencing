@@ -10,32 +10,71 @@
    * @param {number} seqNumber
    * @param {string} imageDescription
    */
-  ImageSequencing.Card = function(image, id, seqNumber, imageDescription) {
+  ImageSequencing.Card = function(cardParams, id, seqNumber,unsupportedAudio) {
     /** @alias H5P.ImageSequencing.Card# */
     var self = this;
     // Initialize event inheritance
     EventDispatcher.call(self);
-    var path = H5P.getPath(image.path, id);
+    var path = H5P.getPath(cardParams.image.path, id);
     var seqNo = seqNumber;
-    var description = imageDescription;
+    var description = cardParams.imageDescription;
+    var audio = cardParams.audio;
 
     var html = (description !== undefined) ? description : '';
 
+    self.createAudioWrapper = function(){
 
+      var audioObj;
+      var $audioWrapper = $('<div>', {
+        'class': 'h5p-image-sequencing-audio-wrapper'
+      });
+
+      if (audio !== undefined) {
+
+        var audioDefaults = {
+          files: audio,
+          audioNotSupported: unsupportedAudio
+        };
+
+        audioObj = new H5P.Audio(audioDefaults, id);
+        audioObj.attach($audioWrapper);
+
+    // Have to stop else audio will take up a socket pending forever in chrome.
+        if (audioObj.audio && audioObj.audio.preload) {
+          audioObj.audio.preload = 'none';
+        }
+      }
+      else {
+        $audioWrapper.addClass('hide');
+      }
+
+      self.audio = audioObj;
+
+      return $audioWrapper;
+    }
     /**
      * Append card to the given container.
      *
      * @param {H5P.jQuery} $container
      */
     self.appendTo = function($container) {
+
+      self.$audio = self.createAudioWrapper();
       $card = $('<li class="sequencing-item draggabled" id="item_' + seqNumber + '">' +
-        '<span class="sequencing-mark"></span>' +
-        '<div class="image-container">' +
-        '<img src="' + path + '" alt="' + description + '"/>' +
-        '</div>' +
-        '<div class="image-desc">' +
-        '<span class="text">' + html + '</span>' +
-        '</div></li>').appendTo($container);
+        '<span class="sequencing-mark"></span></li>');
+      $image = $('<div class="image-container">' +
+      '<img src="' + path + '" alt="' + description + '"/>' +
+      '</div>' +
+      '<div class="image-desc">' +
+      '<span class="text">' + html + '</span>' +
+      '</div>');
+
+
+        $card.append(self.$audio);
+        $card.append($image);
+        $card.appendTo($container);
+
+
     };
 
   };

@@ -42,8 +42,16 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     var gameSubmitted = function(order, $list) {
       self.isSubmitted = true;
       self.timer.stop();
+
+
       var score = 0;
       for (var i = 0; i < order.length; i++) {
+
+        if (cardsToUse[i].audio && cardsToUse[i].audio.stop) {
+            cardsToUse[i].audio.stop();
+            cardsToUse[i].$audio.find('.h5p-audio-inner').addClass('audio-disabled');
+      }
+
         if (i == order[i].split('_')[1]) {
           score++;
           setCorrect($list.find('#' + order[i]));
@@ -74,6 +82,12 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       }
       self.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
       // self.$progressBar.$scoreBar.addClass('sequencing-feedback-show'); //show progressBar
+
+     var completedEvent = self.createXAPIEventTemplate('completed');
+     completedEvent.setScoredResult(score, order.length, self, true, score===order.length);
+     completedEvent.data.statement.result.duration = 'PT' + (Math.round(self.timer.getTime() / 10) / 100) + 'S';
+     self.trigger(completedEvent);
+
     };
 
     /*
@@ -108,7 +122,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       for (var i = 0; i < parameters.sequenceImages.length; i++) {
         var cardParams = parameters.sequenceImages[i];
         if (ImageSequencing.Card.isValid(cardParams)) {
-          var card = new ImageSequencing.Card(cardParams.image, id, i, cardParams.imageDescription);
+          var card = new ImageSequencing.Card(cardParams, id, i,parameters.l10n.audioNotSupported);
           cardsToUse.push(card);
         }
       }
@@ -125,6 +139,9 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
      * @param {H5P.jQuery} $container
      */
     self.attach = function($container) {
+
+      self.triggerXAPI('attempted');
+
       self.$wrapper = $container.addClass('h5p-image-sequencing').html('');
       $('<div class="h5p-task-description">' + parameters.taskDescription + '</div>').appendTo($container);
       var $list = $('<ul class="sortable"/>');
@@ -139,9 +156,9 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         self.$status = $('<dl class="sequencing-status">' + '<dt>' + parameters.l10n.timeSpent + '</dt>' + '<dd class="h5p-time-spent">0:00</dd>' +
           '<dt>' + parameters.l10n.totalMoves + '</dt>' + '<dd class="h5p-submits">0</dd>' + '</dl>');
         self.$status.appendTo($container);
-        self.$progressBar = UI.createScoreBar(shuffledCards.length - 1, 'scoreBarLabel');
-        self.$progressBar.appendTo(self.$feedbackContainer);
+        self.$progressBar = UI.createScoreBar(shuffledCards.length, 'scoreBarLabel');
         self.$feedback.appendTo(self.$feedbackContainer);
+        self.$progressBar.appendTo(self.$feedbackContainer);
         self.$feedbackContainer.appendTo($container);
         self.$submit = UI.createButton({
           title: 'Submit',
@@ -161,6 +178,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         helper: "clone",
         start: function(event, ui) {
           $(ui.helper).addClass("ui-sortable-helper");
+          self.triggerXAPI('interacted');
         },
         stop: function(event, ui) {
           $(ui.helper).removeClass("ui-sortable-helper");
@@ -180,6 +198,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     // registering the H5P.ImageSequencingObject to handle the resize event
     if (self.level) {
       // self.on('resize', scaleGameSize);
+      self.trigger('resize');
     }
 
   }

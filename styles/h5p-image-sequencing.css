@@ -1,6 +1,5 @@
 .sequencing-feedback {
     line-height: 1.5em;
-    margin-right: 1em;
     font-size: 1em;
     display: none;
     -webkit-transform: scale(0, 0) rotate(90deg);
@@ -12,20 +11,20 @@
     transition: -webkit-transform 0.2s;
 }
 .feedback-element {
-    display: inline-block;
-    margin-left: 0.5em;
+    display: block;
+    margin-bottom: 0.8em;
     position: relative;
-    top: -1em;
     font-weight: bold;
     color: #1a73d9;
 }
 .sequencing-feedback-show {
     display: block;
-    max-height: 3.14em;
+    max-height: 4.14em;
     -webkit-transform: scale(1, 1) rotate(0deg);
     -moz-transform: scale(1, 1) rotate(0deg);
     -ms-transform: scale(1, 1) rotate(0deg);
     transform: scale(1, 1) rotate(0deg);
+    margin-bottom: 1em;
 }
 .sequencing-status {} .sequencing-status > dt {
     margin: 0 1em 0 0;
@@ -45,6 +44,10 @@
     padding: 10px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.h5p-image-sequencing .audio-disabled{
+  pointer-events: none;
 }
 .h5p-task-description {
     font-family: Helvetica, Arial, sans-serif;
@@ -95,6 +98,7 @@
     font-family: H5PFontAwesome4;
 }
 .sequencing-item {
+    position: relative;
     width: 168px;
     padding: 6px;
     height: 12.542em;
@@ -161,6 +165,19 @@
     font-size: 16px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+}
+
+.h5p-image-sequencing-audio-wrapper{
+  padding-left: 0.3em;
+  padding-top: 0.1em;
+  box-sizing: border-box;
+  position: absolute;
+  right: 0%;
+  top: 0%;
+  z-index: 1;
+}
+.h5p-audio-inner {
+
 }
 /*resizing code
 =============

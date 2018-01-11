@@ -2,7 +2,7 @@
   "title":"Image Sequencing",
   "description":"Sequence the Images in the order of occurance",
   "majorVersion":1,
-  "minorVersion":0,
+  "minorVersion":1,
   "patchVersion":2,
   "runnable":1,
   "author":"Jithin Thankachan",
@@ -42,13 +42,18 @@
     {
       "machineName":"H5P.JoubelUI",
       "majorVersion":1,
-      "minorVersion":2
+      "minorVersion":3
     },
     {
       "machineName":"jQuery.ui",
       "majorVersion":1,
       "minorVersion":10,
       "defaultStyles":true
-    }
+    },
+    {
+     "machineName": "H5P.Audio",
+     "majorVersion": 1,
+     "minorVersion": 2
+   }
   ]
 }
