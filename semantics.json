@@ -38,6 +38,7 @@
         },
         {
          "name": "audio",
+         "description": "An optional Audio for the card to play",
          "type": "audio",
          "label": "Audio files",
          "importance": "low",
