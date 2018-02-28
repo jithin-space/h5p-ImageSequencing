@@ -4,14 +4,15 @@ A free HTML5 based image sequencing content type allowing authors to add a seque
 
 # License
 
-(The MIT License)
+GPLv3 . See <a href="https://www.gnu.org/licenses/gpl-3.0.txt">More</a>
 
-Copyright (c) 2017 Jithin-Space
+# Contributors
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* <a href="https://github.com/jithin-space">Jithin Thankachan</a>
+* <a href="https://github.com/h5p">H5P Core Development Team </a>
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+# Supporters
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+This project is developed by <a href="https://github.com/space-kerala">SPACE-KERALA</a> in association with <a href="https://icfoss.in"> ICFOSS </a>
 
-This content type is developed as a part of Collaborative Project by [SPACE](https://space-kerala.org) and [ICFOSS](https://icfoss.in)
+
