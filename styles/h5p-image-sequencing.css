@@ -109,6 +109,10 @@
     cursor: pointer;
     border: solid 2px #dbe2e8;
 }
+
+.sequencing-item.selected {
+    border: solid 2px #5c9adf;
+}
 .sequencing-dropzone {
     width: 168px;
     padding: 6px;

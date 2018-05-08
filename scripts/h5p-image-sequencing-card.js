@@ -52,6 +52,60 @@
 
       return $audioWrapper;
     }
+
+    self.setSelected = function(){
+      // self.isSelected = true;
+      // self.$card.addClass('selected');
+      if(!self.isSelected){
+        self.isSelected = true;
+        self.$card.addClass('selected');
+        self.trigger('selected');
+      }
+      else{
+        self.isSelected = false;
+        self.$card.removeClass('selected');
+      }
+
+    }
+
+    // self.setUnselected = function(){
+    //   if(self.isSelected){
+    //     self.isSelected = false;
+    //     self.$card.removeClass('selected');
+    //   }
+    // }
+
+    /**
+     * makTabbable - Make the card accessible when tabbing
+     */
+
+    self.makeTabbable = function() {
+      if (self.$card) {
+        self.$card.attr('tabindex', '0');
+      }
+    };
+
+
+    /**
+     *  Make card tabbable and move focus to it
+     */
+    self.setFocus = function() {
+      self.makeTabbable();
+      self.$card.focus();
+    }
+
+
+    /**
+     *  Prevent tabbing to the card
+     */
+    self.makeUntabbable = function() {
+      if (self.$card) {
+        // self.setUnselected();
+        self.$card.attr('tabindex', '-1');
+      }
+    };
+
+
     /**
      * Append card to the given container.
      *
@@ -72,7 +126,39 @@
 
         $card.append(self.$audio);
         $card.append($image);
-        $card.appendTo($container);
+
+        self.$card = $card;
+        $card.appendTo($container).on('keydown', function (event) {
+          switch (event.which) {
+            case 13: // Enter
+            case 32: // Space
+              self.setSelected();
+              event.preventDefault();
+              return;
+            case 39: // Right
+            case 40: // Down
+              // Move focus forward
+              self.trigger('next');
+              event.preventDefault();
+              return;
+            case 37: // Left
+            case 38: // Up
+              // Move focus back
+              self.trigger('prev');
+              event.preventDefault();
+              return;
+            case 35:
+              // Move to last card
+              self.trigger('last');
+              event.preventDefault();
+              return;
+            case 36:
+              // Move to first card
+              self.trigger('first');
+              event.preventDefault();
+              return;
+          }
+        });
 
 
     };
