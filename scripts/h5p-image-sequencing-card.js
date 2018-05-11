@@ -16,7 +16,8 @@
     // Initialize event inheritance
     EventDispatcher.call(self);
     var path = H5P.getPath(cardParams.image.path, id);
-    var seqNo = seqNumber;
+    self.seqNo = seqNumber;
+    self.isSelected = false;
     var description = cardParams.imageDescription;
     var audio = cardParams.audio;
 
@@ -53,9 +54,32 @@
       return $audioWrapper;
     }
 
+
+    /*
+     * assign the correctly positioned card with class correct
+     * @param {H5P.jQuery} $item
+     */
+    self.setCorrect = function() {
+      self.$card.removeClass('sequencing-incorrect').addClass('sequencing-correct');
+      self.$card.find('.sequencing-mark').removeClass('sequencing-incorrect-mark').addClass('sequencing-correct-mark');
+    };
+
+
+    self.setSolved = function(){
+      self.$card.removeClass('sequencing-incorrect').addClass('sequencing-correct');
+    }
+
+    /*
+     * assign the incorrectly positioned card with class incorrect
+     * @param {H5P.jQuery} self.$card
+     */
+    self.setIncorrect = function() {
+      self.$card.removeClass('sequencing-correct').addClass('sequencing-incorrect');
+      self.$card.find('.sequencing-mark').removeClass('sequencing-correct-mark').addClass('sequencing-incorrect-mark');
+    };
+
     self.setSelected = function(){
-      // self.isSelected = true;
-      // self.$card.addClass('selected');
+
       if(!self.isSelected){
         self.isSelected = true;
         self.$card.addClass('selected');
@@ -67,6 +91,8 @@
       }
 
     }
+
+    
 
     // self.setUnselected = function(){
     //   if(self.isSelected){
@@ -122,11 +148,8 @@
       '<div class="image-desc">' +
       '<span class="text">' + html + '</span>' +
       '</div>');
-
-
         $card.append(self.$audio);
         $card.append($image);
-
         self.$card = $card;
         $card.appendTo($container).on('keydown', function (event) {
           switch (event.which) {

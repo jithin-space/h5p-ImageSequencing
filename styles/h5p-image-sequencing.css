@@ -38,10 +38,11 @@
     padding: 5px 0;
 }
 .h5p-image-sequencing {
-    max-width: 1176px;
+    /*max-width: 1176px;*/
+    max-width:100%;
     width: auto;
-    border: solid 2px #eeeeee;
-    padding: 10px;
+    /*border: solid 2px #eeeeee;*/
+    /*padding: 10px;*/
     margin-left: auto;
     margin-right: auto;
 }
@@ -50,10 +51,12 @@
   pointer-events: none;
 }
 .h5p-task-description {
-    font-family: Helvetica, Arial, sans-serif;
-    color: #000000;
-    font-size: 1.125em;
-    margin-bottom: 0.8em;
+font-family: Helvetica, Arial, sans-serif;
+color: #000000;
+font-size: 1.125em;
+line-height: 1.125em;
+padding: 1em;
+border-bottom: 1px solid #dde4ea;
 }
 .h5p-image-sequencing-retry.h5p-joubelui-button {
     margin-left: 0;
@@ -163,13 +166,18 @@
 }
 .h5p-image-sequencing > ul {
     list-style: none;
-    padding: 0;
-    margin: 0;
     overflow: hidden !important;
     font-size: 16px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+    border-bottom: 1px solid #dde4ea;
 }
+
+.h5p-image-sequencing .footer-container{
+  padding: 0em 1em 0em 1em;
+}
+
+
 
 .h5p-image-sequencing-audio-wrapper{
   padding-left: 0.3em;
@@ -194,7 +202,7 @@
   /* (2*(10+2))+4((2+2)+(12)+(6+6)+(156))== 552 */
 
     .h5p-image-sequencing {
-        max-width: 552px;
+        /*max-width: 552px;*/
     }
     .sequencing-item {
         width: 156px;
@@ -213,7 +221,7 @@
   /* (2*(10+2))+4((2+2)+(12)+(6+6)+(158))== 768 */
 
     .h5p-image-sequencing {
-        max-width: 744px;
+        /*max-width: 744px;*/
     }
     .sequencing-item {
         width: 158px;
@@ -230,7 +238,7 @@
   /* 5 images per row */
   /* (2*(10+2))+5((2+2)+(12)+(6+6)+(165.6))== 992 */
     .h5p-image-sequencing {
-        max-width: 968px;
+        /*max-width: 968px;*/
     }
     .sequencing-item {
         width: 165.6px;
@@ -248,7 +256,7 @@
     /* (2*(10+2))+6((2+2)+(12)+(6+6)+(168))== 1200 */
 
     .h5p-image-sequencing {
-        max-width: 1176px;
+        /*max-width: 1176px;*/
     }
     .sequencing-item {
         width: 168px;

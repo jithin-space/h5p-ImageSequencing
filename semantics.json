@@ -48,6 +48,37 @@
     }
   },
   {
+    "name": "behaviour",
+    "type": "group",
+    "label": "Behavioural settings",
+    "importance": "low",
+    "description": "These options will let you control how the game behaves.",
+    "optional": true,
+    "fields": [
+      {
+        "name": "enableSolutionsButton",
+        "type": "boolean",
+        "label": "Add a show solution button for the game",
+        "importance": "low",
+        "default": true
+      },
+      {
+        "name": "enableRetry",
+        "type": "boolean",
+        "label": "Add button for retrying when the game is over",
+        "importance": "low",
+        "default": true
+      },
+      {
+        "name": "enableResume",
+        "type": "boolean",
+        "label": "Add button for resuming from the current state ",
+        "importance": "low",
+        "default": true
+      }
+    ]
+  },
+  {
     "label":"Localization",
     "importance":"low",
     "name":"l10n",
@@ -96,6 +127,20 @@
       "name": "tryAgain",
       "type": "text",
       "default": "Retry"
+    },
+    {
+      "label": "Text for \"Show Solution\" button",
+      "importance": "low",
+      "name": "showSolution",
+      "type": "text",
+      "default": "ShowSolution"
+    },
+    {
+      "label": "Text for \"Resume\" button",
+      "importance": "low",
+      "name": "resume",
+      "type": "text",
+      "default": "Resume"
     },
     {
   "name": "audioNotSupported",
