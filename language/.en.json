@@ -1,0 +1,86 @@
+{
+  "semantics":[
+    {
+      "label": "Task Description",
+      "default":"Drag to arrange the images in the correct sequence",
+      "description":"A guide telling the user how to solve this task."
+    },
+    {
+        "label":"Images",
+        "entity":"image",
+        "field":{
+          "label":"Image Element",
+          "fields": [
+            {
+              "label": "Image"
+            },
+            {
+              "label":"Image Description (At Max 30 char)",
+              "description":"An image description if they cannot recognize the image"
+            },
+            {
+              "label": "Audio files",
+              "description": "An optional Audio for the card to play"
+            }
+          ]
+        }
+    },
+    {
+        "label": "Behavioural settings",
+        "description": "These options will let you control how the game behaves.",
+        "fields": [
+          {
+            "label": "Add a show solution button for the game"
+          },
+          {
+            "label": "Add button for retrying when the game is over"
+          },
+          {
+            "label": "Add button for resuming from the current state "
+          }
+        ]
+    },
+    {
+      "label": "Localization",
+      "fields":[
+        {
+            "label":"Total Moves text",
+            "default":"Total Moves"
+        },
+        {
+          "label":"Time spent text",
+          "default":"Time spent"
+        },
+        {
+          "label":"Dropper Text",
+          "default":"Please Drop"
+        },
+        {
+          "label": "Feedback text",
+          "default": "You got @score of @total points",
+          "description": "Feedback text, variables available: @score and @total. Example: 'You got @score of @total possible points'"
+        },
+        {
+          "label": "Text for \"Check\" button",
+          "default": "Check"
+        },
+        {
+          "label": "Text for \"Retry\" button",
+          "default": "Retry"
+        },
+        {
+          "label": "Text for \"Show Solution\" button",
+          "default": "ShowSolution"
+        },
+        {
+          "label": "Text for \"Resume\" button",
+          "default": "Resume"
+        },
+        {
+          "label": "Audio not supported message",
+          "default": "Audio Error"
+        }
+      ]
+    }
+  ]
+}
