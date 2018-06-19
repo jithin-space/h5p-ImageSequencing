@@ -23,6 +23,8 @@
     var html = (self.description !== undefined) ? self.description : '';
 
 
+
+
     /**
      * self - create a container with audio files
      *
@@ -138,12 +140,48 @@
       var $image = $('<div class="image-container">' +
         '<img src="' + path + '" alt="' + self.description + '"/>' +
         '</div>' +
-        '<div class="image-desc">' +
+        '<div class="image-desc" data-title="'+html+'">' +
         '<span class="text">' + html + '</span>' +
         '</div>');
+
+
       $card.append(self.$audio);
       $card.append($image);
       self.$card = $card;
+
+      // for tooltip functionality
+      $card.find('.image-desc').on('click',function(event){
+        var $this = $(this);
+        if(this.offsetWidth < this.scrollWidth){
+            $this.tooltip('option','content',$this.find('.text').html());
+            $this.tooltip( "option", "items", "[data-title]" );
+        }
+         $(this).tooltip('enable').tooltip('open');
+      });
+
+      $card.find('.image-desc').tooltip({
+        items:'[data-title]',
+        content:'',
+        show: null,
+        position: {
+          my: "left top",
+          at: "center bottom",
+          using: function( position, feedback ) {
+            $( this ).css( position );
+            $( "<div>" )
+              .addClass( "arrow" )
+              .addClass( feedback.vertical )
+              .addClass( feedback.horizontal )
+              .appendTo( this );
+          }
+        },
+        // disabled by default
+        disabled: true,
+        close: function( event, ui ) {
+           $(this).tooltip('disable');
+          }
+      });
+
       $card.appendTo($container).on('keydown', function(event) {
         switch (event.which) {
           case 13: // Enter
