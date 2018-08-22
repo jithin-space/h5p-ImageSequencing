@@ -10,7 +10,7 @@ var H5PPresave = H5PPresave || {};
 H5PPresave['H5P.ImageSequencing'] = function (content, finished) {
   var presave = H5PEditor.Presave;
 
-  if (isContentInValid()) {
+  if (isContentInvalid()) {
     throw new presave.exceptions.InvalidContentSemanticsException('Invalid ImageSequencing Error')
   }
 
@@ -18,15 +18,13 @@ H5PPresave['H5P.ImageSequencing'] = function (content, finished) {
 
   presave.validateScore(score);
 
-  if (finished) {
-    finished({maxScore: score});
-  }
+  finished({maxScore: score});
 
   /**
    * Check if required parameters is present
    * @return {boolean}
    */
-  function isContentInValid() {
+  function isContentInvalid() {
     return !presave.checkNestedRequirements(content, 'content.sequenceImages') || !Array.isArray(content.sequenceImages);
   }
 };
