@@ -10,6 +10,12 @@
   {
     "name":"sequenceImages",
     "type":"list",
+    "widgets":[
+      {
+        "name": "VerticalTabs",
+        "label":"Default"
+      }
+    ],
     "label":"Images",
     "importance":"high",
     "entity":"image",

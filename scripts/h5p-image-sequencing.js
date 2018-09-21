@@ -9,6 +9,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
    * @param {Number} id
    */
   function ImageSequencing(parameters, id) {
+
     /** @alias H5P.ImageSequencing# */
     var self = this;
     self.isRetry = false;
@@ -16,23 +17,28 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     self.isShowSolution = false;
     self.isGamePaused = false;
     self.isAttempted = false;
+    self.params = $.extend(true,{},{
+      l10n:{
+        showSolution: "ShowSolution",
+        resume: "Resume",
+        audioNotSupported: "Audio Error"
+      }
+    },parameters);
 
     // Initialize event inheritance
     EventDispatcher.call(self);
 
     /**
      * when user clicks the check button
-     *@param {Array} order
-     *@param {H5P.jQuery} $item
-     */
-    var gameSubmitted = function() {
+     **/
+    self.gameSubmitted = function() {
       self.isSubmitted = true;
       self.timer.stop();
       self.score = 0;
       for (var i = 0; i < self.numCards; i++) {
-        if (cardsToUse[i].audio && cardsToUse[i].audio.stop) {
-          cardsToUse[i].audio.stop();
-          cardsToUse[i].$audio.find('.h5p-audio-inner').addClass(
+        if (self.cardsToUse[i].audio && self.cardsToUse[i].audio.stop) {
+          self.cardsToUse[i].audio.stop();
+          self.cardsToUse[i].$audio.find('.h5p-audio-inner').addClass(
             'audio-disabled');
         }
         if (i == self.shuffledCards[i].seqNo) {
@@ -43,7 +49,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         }
       }
       self.$progressBar.setScore(self.score); //set the score on the progressBar
-      var scoreText = parameters.l10n.score;
+      var scoreText = self.params.l10n.score;
       scoreText = scoreText.replace('@score', self.score).replace(
         '@total', self.numCards);
       self.$feedback.html(scoreText); //set the feedback to feedbackMessage obtained.
@@ -54,18 +60,18 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       self.$list.sortable("disable");
       self.isGamePaused = true; //disable sortable functionality and create the retry button
       if (self.score != self.numCards) {
-        if (parameters.behaviour.enableRetry) {
+        if (self.params.behaviour.enableRetry) {
           //only if the retry button is enabled
           self.$retry = UI.createButton({
             title: 'Retry',
             'class': 'h5p-image-sequencing-retry',
             click: self.resetTask,
             html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;' +
-              parameters.l10n.tryAgain
+             self.params.l10n.tryAgain
           });
           self.$retry.appendTo(self.$footerContainer);
         }
-        if (parameters.behaviour.enableResume) {
+        if (self.params.behaviour.enableResume) {
           //only if the retry button is enabled
           self.$resume = UI.createButton({
             title: 'Resume',
@@ -77,7 +83,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
               self.attach(self.$wrapper);
             },
             html: '<span><i class="fa fa-repeat" aria-hidden="true"></i></span>&nbsp;' +
-              parameters.l10n.resume
+             self.params.l10n.resume
           });
           self.$resume.appendTo(self.$footerContainer);
         }
@@ -85,16 +91,17 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       self.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
       self.$feedback.focus();
       // xApi Section
-      var completedEvent = self.createXAPIEventTemplate('completed');
-      completedEvent.setScoredResult(self.score, self.numCards, self,
-        true, self.score === self.numCards);
-      completedEvent.data.statement.result.duration = 'PT' + (Math.round(
-        self.timer.getTime() / 10) / 100) + 'S';
-      self.trigger(completedEvent);
+      // either completed or answered xAPI is required. Assuming answerd , disabling completed
+      // var completedEvent = self.createXAPIEventTemplate('completed');
+      // completedEvent.setScoredResult(self.score, self.numCards, self,
+      //   true, self.score === self.numCards);
+      // completedEvent.data.statement.result.duration = 'PT' + (Math.round(
+      //   self.timer.getTime() / 10) / 100) + 'S';
+      // self.trigger(completedEvent);
       //for implementing question contract
       var xAPIEvent = self.createXAPIEventTemplate('answered');
-      addQuestionToXAPI(xAPIEvent);
-      addResponseToXAPI(xAPIEvent);
+      self.addQuestionToXAPI(xAPIEvent);
+      self.addResponseToXAPI(xAPIEvent);
       self.trigger(xAPIEvent);
       self.trigger('resize');
     };
@@ -108,8 +115,8 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
      */
     self.getXAPIData = function() {
       var xAPIEvent = self.createXAPIEventTemplate('answered');
-      addQuestionToXAPI(xAPIEvent);
-      addResponseToXAPI(xAPIEvent);
+      self.addQuestionToXAPI(xAPIEvent);
+      self.addResponseToXAPI(xAPIEvent);
       return {
         statement: xAPIEvent.data.statement
       };
@@ -118,20 +125,20 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     /**
      * Add the question itself to the definition part of an xAPIEvent
      */
-    var addQuestionToXAPI = function(xAPIEvent) {
+    self.addQuestionToXAPI = function(xAPIEvent) {
       var definition = xAPIEvent.getVerifiedStatementValue(['object',
         'definition'
       ]);
       definition.description = {
         // Remove tags, must wrap in div tag because jQuery 1.9 will crash if the string isn't wrapped in a tag.
-        'en-US': $('<div>' + parameters.taskDescription + '</div>').text()
+        'en-US': $('<div>' +self.params.taskDescription + '</div>').text()
       };
       definition.type =
         'http://adlnet.gov/expapi/activities/cmi.interaction';
       definition.interactionType = 'sequencing';
       definition.correctResponsesPattern = [];
       definition.choices = [];
-      for (var i = 0; i < parameters.sequenceImages.length; i++) {
+      for (var i = 0; i <self.params.sequenceImages.length; i++) {
         definition.choices[i] = {
           'id': 'item_' + i + '',
           'description': {
@@ -142,7 +149,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         };
         if (i === 0) {
           definition.correctResponsesPattern[0] = 'item_' + i + '[,]';
-        } else if (i === parameters.sequenceImages.length - 1) {
+        } else if (i ===self.params.sequenceImages.length - 1) {
           definition.correctResponsesPattern[0] += 'item_' + i;
         } else {
           definition.correctResponsesPattern[0] += 'item_' + i + '[,]';
@@ -156,7 +163,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
      * @param {H5P.XAPIEvent} xAPIEvent
      *  The xAPI event we will add a response to
      */
-    var addResponseToXAPI = function(xAPIEvent) {
+    self.addResponseToXAPI = function(xAPIEvent) {
       var maxScore = self.getMaxScore();
       var score = self.getScore();
       var success = (score == maxScore);
@@ -175,7 +182,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
     /**
      * function that triggered upon clicking show solutions button
      */
-    var showSolutions = function() {
+    self.showSolutions = function() {
       var orderedCards = [];
       for (var i = 0; i < self.numCards; i++) {
         for (var j = 0; j < self.numCards; j++) {
@@ -190,22 +197,22 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
       self.isShowSolution = true;
       self.timer.stop();
       for (var i = 0; i < self.numCards; i++) {
-        if (cardsToUse[i].audio && cardsToUse[i].audio.stop) {
-          cardsToUse[i].audio.stop();
-          cardsToUse[i].$audio.find('.h5p-audio-inner').addClass(
+        if (self.cardsToUse[i].audio && self.cardsToUse[i].audio.stop) {
+          self.cardsToUse[i].audio.stop();
+          self.cardsToUse[i].$audio.find('.h5p-audio-inner').addClass(
             'audio-disabled');
         }
       }
       self.attach(self.$wrapper);
       self.$list.sortable("disable");
       self.isGamePaused = true; //disable sortable functionality and create the retry button
-      if (parameters.behaviour.enableRetry) {
+      if (self.params.behaviour.enableRetry) {
         self.$retry = UI.createButton({
           title: 'Retry',
           'class': 'h5p-image-sequencing-retry',
           click: self.resetTask,
           html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;' +
-            parameters.l10n.tryAgain
+           self.params.l10n.tryAgain
         });
         self.$retry.appendTo(self.$footerContainer);
       }
@@ -214,44 +221,41 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
 
     /**
      * shuffle the cards before the game starts or restarts
-     * @param {Array} cardsToUse
-     * @return {Array} shuffledCards
      */
-    var shuffleCards = function(cardsToUse) {
-      var numCardsToUse = cardsToUse.length;
+    self.shuffleCards = function() {
+      var numCardsToUse = self.cardsToUse.length;
       var numPicket = 0;
       var pickedCardsMap = {};
-      var shuffledCards = [];
+      self.shuffledCards = [];
       while (numPicket < numCardsToUse) {
         var pickIndex = Math.floor(Math.random() * numCardsToUse);
         if (pickedCardsMap[pickIndex]) {
           continue; // Already picked, try again!
         }
-        shuffledCards.push(cardsToUse[pickIndex]);
+        self.shuffledCards.push(self.cardsToUse[pickIndex]);
         pickedCardsMap[pickIndex] = true;
         numPicket++;
       }
-      return shuffledCards;
     };
 
     /**
      * Initialize the cards to be used in the game
      */
-    var getCardsToUse = function() {
-      var cardsToUse = [];
-      for (var i = 0; i < parameters.sequenceImages.length; i++) {
-        var cardParams = parameters.sequenceImages[i];
+    self.getCardsToUse = function() {
+      self.cardsToUse = [];
+      for (var i = 0; i <self.params.sequenceImages.length; i++) {
+        var cardParams =self.params.sequenceImages[i];
         if (ImageSequencing.Card.isValid(cardParams)) {
           var card = new ImageSequencing.Card(cardParams, id, i,
-            parameters.l10n.audioNotSupported);
-          cardsToUse.push(card);
+           self.params.l10n.audioNotSupported);
+          self.cardsToUse.push(card);
         }
       }
-      return cardsToUse;
+
     };
 
-    var cardsToUse = getCardsToUse();
-    self.shuffledCards = shuffleCards(cardsToUse);
+    self.getCardsToUse();
+    self.shuffleCards();
     self.numCards = self.shuffledCards.length;
 
     /**
@@ -380,7 +384,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
      */
     self.resetTask = function() {
       self.$wrapper.empty();
-      self.shuffledCards = shuffleCards(cardsToUse);
+      self.shuffleCards();
       self.isRetry = true;
       self.isShowSolution = false;
       self.isGamePaused = false;
@@ -397,7 +401,7 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
 
       self.triggerXAPI('attempted');
       self.$wrapper = $container.addClass('h5p-image-sequencing').html('');
-      $('<div class="h5p-task-description" tabindex= "0">' + parameters.taskDescription +
+      $('<div class="h5p-task-description" tabindex= "0">' +self.params.taskDescription +
         '</div>').appendTo($container);
       self.$list = $('<ul class="sortable"/>');
       for (var i = 0; i < self.numCards; i++) {
@@ -426,9 +430,9 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
         if (!self.isResume && !self.isShowSolution) {
           //else persist existing timer and counter values
           self.$status = $('<dl class="sequencing-status">' + '<dt>' +
-            parameters.l10n.timeSpent + '</dt>' +
+           self.params.l10n.timeSpent + '</dt>' +
             '<dd class="h5p-time-spent">0:00</dd>' +
-            '<dt>' + parameters.l10n.totalMoves + '</dt>' +
+            '<dt>' +self.params.l10n.totalMoves + '</dt>' +
             '<dd class="h5p-submits">0</dd>' + '</dl>');
           self.timer = new ImageSequencing.Timer(self.$status.find(
             '.h5p-time-spent')[0]); //Initialize timer
@@ -449,17 +453,17 @@ H5P.ImageSequencing = (function(EventDispatcher, $, UI) {
           //not on showSolution mode
           self.$submit = UI.createButton({
             title: 'Submit',
-            click: gameSubmitted,
+            click: self.gameSubmitted,
             html: '<span><i class="fa fa-check" aria-hidden="true"></i></span>&nbsp;' +
-              parameters.l10n.checkAnswer
+             self.params.l10n.checkAnswer
           });
           self.$submit.appendTo(self.$buttonContainer);
-          if (parameters.behaviour.enableSolutionsButton) {
+          if (self.params.behaviour.enableSolutionsButton) {
             self.$showSolution = UI.createButton({
               title: 'Submit',
-              click: showSolutions,
+              click: self.showSolutions,
               html: '<span><i class="fa fa-eye" aria-hidden="true"></i></span>&nbsp;' +
-                parameters.l10n.showSolution
+               self.params.l10n.showSolution
             });
             self.$showSolution.appendTo(self.$buttonContainer);
           }

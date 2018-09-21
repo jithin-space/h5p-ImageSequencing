@@ -92,10 +92,12 @@
       if (!self.isSelected) {
         self.isSelected = true;
         self.$card.addClass('selected');
+        self.$audio.find('button').attr('tabindex','0');
         self.trigger('selected');
       } else {
         self.isSelected = false;
         self.$card.removeClass('selected');
+        self.$audio.find('button').attr('tabindex','-1');
       }
     };
 
@@ -105,6 +107,7 @@
     self.makeTabbable = function() {
       if (self.$card) {
         self.$card.attr('tabindex', '0');
+
       }
     };
 
@@ -134,6 +137,8 @@
     self.appendTo = function($container) {
 
       self.$audio = self.createAudioWrapper();
+      //disable tabbing the audio button under normal circumstances
+      self.$audio.find('button').attr('tabindex','-1');
       var $card = $('<li class="sequencing-item draggabled" id="item_' +
         seqNumber + '">' +
         '<span class="sequencing-mark"></span></li>');
@@ -166,6 +171,7 @@
         position: {
           my: "left top",
           at: "center bottom",
+          collision: "fit",
           using: function( position, feedback ) {
             $( this ).css( position );
             $( "<div>" )
@@ -180,6 +186,13 @@
         close: function( event, ui ) {
            $(this).tooltip('disable');
           }
+      });
+
+      self.$audio.on('keydown',function(event){
+        if(event.which == 13 || event.which == 32){
+          //play or stop the audio without affecting the card
+          event.stopPropagation();
+        }
       });
 
       $card.appendTo($container).on('keydown', function(event) {
