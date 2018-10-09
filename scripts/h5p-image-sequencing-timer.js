@@ -1,4 +1,4 @@
-(function(ImageSequencing, Timer) {
+(function (ImageSequencing, Timer) {
 
   /**
    * Adapter between image sequencing and H5P.Timer
@@ -7,7 +7,7 @@
    * @extends H5P.Timer
    * @param {Element} element
    */
-  ImageSequencing.Timer = function(element) {
+  ImageSequencing.Timer = function (element) {
     /** @alias H5P.ImageSequencing.Timer# */
     var self = this;
     // Initialize event inheritance
@@ -21,7 +21,7 @@
      * @private
      */
 
-    var update = function() {
+    var update = function () {
       var time = self.getTime();
 
       var minutes = Timer.extractTimeElement(time, 'minutes');
@@ -35,7 +35,7 @@
 
     // Setup default behavior
     self.notify('every_tenth_second', update);
-    self.on('reset', function() {
+    self.on('reset', function () {
       element.innerText = naturalState;
       self.notify('every_tenth_second', update);
     });

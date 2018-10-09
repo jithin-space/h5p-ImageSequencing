@@ -1,4 +1,4 @@
-(function(ImageSequencing, EventDispatcher, $) {
+(function (ImageSequencing, EventDispatcher, $) {
 
   /**
    * Controls all the operations for each image card
@@ -10,35 +10,35 @@
    * @param {number} seqNumber
    * @param {string} imageDescription
    */
-  ImageSequencing.Card = function(cardParams, id, seqNumber, unsupportedAudio) {
+  ImageSequencing.Card = function (cardParams, id, seqNumber, unsupportedAudio) {
     /** @alias H5P.ImageSequencing.Card# */
-    var self = this;
+    let that = this;
     // Initialize event inheritance
-    EventDispatcher.call(self);
-    var path = H5P.getPath(cardParams.image.path, id);
-    self.seqNo = seqNumber;
-    self.isSelected = false;
-    self.description = cardParams.imageDescription;
-    var audio = cardParams.audio;
-    var html = (self.description !== undefined) ? self.description : '';
+    EventDispatcher.call(that);
+    let path = H5P.getPath(cardParams.image.path, id);
+    that.seqNo = seqNumber;
+    that.isSelected = false;
+    that.description = cardParams.imageDescription;
+    let audio = cardParams.audio;
+    let html = (that.description !== undefined) ? that.description : '';
 
 
 
 
     /**
-     * self - create a container with audio files
+     * that - create a container with audio files
      *
      * @return {H5P.jQuery}  $audioWrapper
      */
 
-    self.createAudioWrapper = function() {
-      var audioObj;
-      var $audioWrapper = $('<div>', {
+    that.createAudioWrapper = function () {
+      let audioObj;
+      let $audioWrapper = $('<div>', {
         'class': 'h5p-image-sequencing-audio-wrapper'
       });
 
       if (audio !== undefined) {
-        var audioDefaults = {
+        let audioDefaults = {
           files: audio,
           audioNotSupported: unsupportedAudio
         };
@@ -52,17 +52,19 @@
       else {
         $audioWrapper.addClass('hide');
       }
-      self.audio = audioObj;
+      that.audio = audioObj;
+
+
       return $audioWrapper;
     };
 
     /**
      * assign the correctly positioned card with class correct
      */
-    self.setCorrect = function() {
-      self.$card.removeClass('sequencing-incorrect').addClass(
+    that.setCorrect = function () {
+      that.$card.removeClass('sequencing-incorrect').addClass(
         'sequencing-correct');
-      self.$card.find('.sequencing-mark').removeClass(
+      that.$card.find('.sequencing-mark').removeClass(
         'sequencing-incorrect-mark').addClass('sequencing-correct-mark');
     };
 
@@ -70,43 +72,47 @@
     /**
      * mark the card as solved
      */
-    self.setSolved = function() {
-      self.$card.removeClass('sequencing-incorrect').addClass(
+    that.setSolved = function () {
+      that.$card.removeClass('sequencing-incorrect').addClass(
         'sequencing-correct');
     };
 
     /*
      * assign the incorrectly positioned card with class incorrect
      */
-    self.setIncorrect = function() {
-      self.$card.removeClass('sequencing-correct').addClass(
+    that.setIncorrect = function () {
+      that.$card.removeClass('sequencing-correct').addClass(
         'sequencing-incorrect');
-      self.$card.find('.sequencing-mark').removeClass(
+      that.$card.find('.sequencing-mark').removeClass(
         'sequencing-correct-mark').addClass('sequencing-incorrect-mark');
     };
 
     /**
      * toggle between selected and unselected states
      */
-    self.setSelected = function() {
-      if (!self.isSelected) {
-        self.isSelected = true;
-        self.$card.addClass('selected');
-        self.$audio.find('button').attr('tabindex','0');
-        self.trigger('selected');
-      } else {
-        self.isSelected = false;
-        self.$card.removeClass('selected');
-        self.$audio.find('button').attr('tabindex','-1');
+    that.setSelected = function () {
+      if (!that.isSelected) {
+        that.isSelected = true;
+        that.$card.addClass('selected');
+        that.$card.attr('aria-selected',true);
+        that.$audio.find('button').attr('tabindex','0').attr('aria-label','play the corresponding audio').attr('role','button');
+        that.trigger('selected');
+      }
+      else {
+        that.isSelected = false;
+        that.$card.removeClass('selected');
+        that.$card.attr('aria-selected','');
+        that.$card.attr('aria-label',(that.description?that.description:"sequencing item"));
+        that.$audio.find('button').attr('tabindex','-1').attr('aria-label','');
       }
     };
 
     /**
      * makTabbable - Make the card accessible when tabbing
      */
-    self.makeTabbable = function() {
-      if (self.$card) {
-        self.$card.attr('tabindex', '0');
+    that.makeTabbable = function () {
+      if (that.$card) {
+        that.$card.attr('tabindex', '0');
 
       }
     };
@@ -114,17 +120,17 @@
     /**
      *  Make card tabbable and move focus to it
      */
-    self.setFocus = function() {
-      self.makeTabbable();
-      self.$card.focus();
+    that.setFocus = function () {
+      that.makeTabbable();
+      that.$card.focus();
     };
 
     /**
      *  Prevent tabbing to the card
      */
-    self.makeUntabbable = function() {
-      if (self.$card) {
-        self.$card.attr('tabindex', '-1');
+    that.makeUntabbable = function () {
+      if (that.$card) {
+        that.$card.attr('tabindex', '-1');
       }
     };
 
@@ -134,34 +140,35 @@
      *
      * @param {H5P.jQuery} $container
      */
-    self.appendTo = function($container) {
+    that.appendTo = function ($container) {
 
-      self.$audio = self.createAudioWrapper();
+      that.$audio = that.createAudioWrapper();
       //disable tabbing the audio button under normal circumstances
-      self.$audio.find('button').attr('tabindex','-1');
-      var $card = $('<li class="sequencing-item draggabled" id="item_' +
-        seqNumber + '">' +
+      that.$audio.find('button').attr('tabindex','-1');
+      let $card = $('<li class="sequencing-item draggabled" id="item_' +
+        seqNumber + '" role="option"  aria-label="'+(that.description?that.description:"sequencing item")+'" >' +
         '<span class="sequencing-mark"></span></li>');
-      var $image = $('<div class="image-container">' +
-        '<img src="' + path + '" alt="' + self.description + '"/>' +
+      let $image = $('<div class="image-container">' +
+        '<img src="' + path + '"/>' +
         '</div>' +
         '<div class="image-desc" data-title="'+html+'">' +
         '<span class="text">' + html + '</span>' +
         '</div>');
 
 
-      $card.append(self.$audio);
+      $card.append(that.$audio);
       $card.append($image);
-      self.$card = $card;
+      that.$card = $card;
+      that.$card.attr('role','group').attr('aria-label','sequencing item');
 
       // for tooltip functionality
-      $card.find('.image-desc').on('click',function(event){
-        var $this = $(this);
-        if(this.offsetWidth < this.scrollWidth){
-            $this.tooltip('option','content',$this.find('.text').html());
-            $this.tooltip( "option", "items", "[data-title]" );
+      $card.find('.image-desc').on('click',function (event) {
+        let $this = $(this);
+        if (this.offsetWidth < this.scrollWidth) {
+          $this.tooltip('option','content',$this.find('.text').html());
+          $this.tooltip( "option", "items", "[data-title]" );
         }
-         $(this).tooltip('enable').tooltip('open');
+        $(this).tooltip('enable').tooltip('open');
       });
 
       $card.find('.image-desc').tooltip({
@@ -172,7 +179,7 @@
           my: "left top",
           at: "center bottom",
           collision: "fit",
-          using: function( position, feedback ) {
+          using: function ( position, feedback ) {
             $( this ).css( position );
             $( "<div>" )
               .addClass( "arrow" )
@@ -183,45 +190,45 @@
         },
         // disabled by default
         disabled: true,
-        close: function( event, ui ) {
-           $(this).tooltip('disable');
-          }
+        close: function ( event, ui ) {
+          $(this).tooltip('disable');
+        }
       });
 
-      self.$audio.on('keydown',function(event){
-        if(event.which == 13 || event.which == 32){
+      that.$audio.on('keydown',function (event ) {
+        if (event.which == 13 || event.which == 32) {
           //play or stop the audio without affecting the card
           event.stopPropagation();
         }
       });
 
-      $card.appendTo($container).on('keydown', function(event) {
+      that.$card.appendTo($container).on('keydown', function (event) {
         switch (event.which) {
           case 13: // Enter
           case 32: // Space
-            self.setSelected();
+            that.setSelected();
             event.preventDefault();
             return;
           case 39: // Right
           case 40: // Down
             // Move focus forward
-            self.trigger('next');
+            that.trigger('next');
             event.preventDefault();
             return;
           case 37: // Left
           case 38: // Up
             // Move focus back
-            self.trigger('prev');
+            that.trigger('prev');
             event.preventDefault();
             return;
           case 35:
             // Move to last card
-            self.trigger('last');
+            that.trigger('last');
             event.preventDefault();
             return;
           case 36:
             // Move to first card
-            self.trigger('first');
+            that.trigger('first');
             event.preventDefault();
             return;
         }
@@ -239,7 +246,7 @@
    * @param {object} params
    * @returns {boolean}
    */
-  ImageSequencing.Card.isValid = function(params) {
+  ImageSequencing.Card.isValid = function (params) {
     return (params !== undefined && params.image !== undefined && params.image
       .path !== undefined);
   };
