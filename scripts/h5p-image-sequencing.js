@@ -1,22 +1,24 @@
 H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
 
   /**
-   * Image Sequencing Constructor
+   * ImageSequencing - Constructor
    *
-   * @class H5P.ImageSequencing
    * @extends H5P.EventDispatcher
-   * @param {Object} parameters
-   * @param {Number} id
+   * @param {Object} parameters from semantics
+   * @param {number} id         unique id given by the platform
+   *
    */
   function ImageSequencing(parameters, id) {
 
     /** @alias H5P.ImageSequencing# */
     let that = this;
     that.isRetry = false;
-    that.isResume = false;
+    that.isRefresh = false;
     that.isShowSolution = false;
     that.isGamePaused = false;
     that.isAttempted = false;
+    that.score = 0;
+
     that.params = $.extend(true,{},{
       l10n:{
         showSolution: "ShowSolution",
@@ -29,93 +31,10 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     EventDispatcher.call(that);
 
     /**
-     * when user clicks the check button
-     **/
-    that.gameSubmitted = function () {
-      that.isSubmitted = true;
-      that.timer.stop();
-      that.score = 0;
-      for (let i = 0; i < that.numCards; i++) {
-        if (that.cardsToUse[i].audio && that.cardsToUse[i].audio.stop) {
-          that.cardsToUse[i].audio.stop();
-          that.cardsToUse[i].$audio.find('.h5p-audio-inner').addClass(
-            'audio-disabled');
-        }
-        if (i === that.shuffledCards[i].seqNo) {
-          that.score++;
-          that.shuffledCards[i].setCorrect();
-        }
-        else {
-          that.shuffledCards[i].setIncorrect();
-        }
-      }
-      that.$progressBar.setScore(that.score); //set the score on the progressBar
-      let scoreText = that.params.l10n.score;
-      scoreText = scoreText.replace('@score', that.score).replace(
-        '@total', that.numCards);
-      that.$feedback.html(scoreText); //set the feedback to feedbackMessage obtained.
-      that.$submit.hide();
-      if (that.$showSolution) {
-        that.$showSolution.hide();
-      }
-      that.$list.sortable("disable");
-      that.isGamePaused = true; //disable sortable functionality and create the retry button
-      if (that.score != that.numCards) {
-        that.createRetryButton();
-        if (that.params.behaviour.enableResume) {
-          //only if the retry button is enabled
-          that.$resume = UI.createButton({
-            title: 'Resume',
-            'class': 'h5p-image-sequencing-resume',
-            click: function () {
-              that.$wrapper.empty();
-              that.isResume = true;
-              that.isGamePaused = false;
-              that.attach(that.$wrapper);
-            },
-            html: '<span><i class="fa fa-repeat" aria-hidden="true"></i></span>&nbsp;' +
-             that.params.l10n.resume
-          });
-          that.$resume.appendTo(that.$footerContainer);
-        }
-      }
-      that.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
-      that.$feedback.focus();
-      // xApi Section
-      // either completed or answered xAPI is required. Assuming answerd , disabling completed
-      // let completedEvent = that.createXAPIEventTemplate('completed');
-      // completedEvent.setScoredResult(that.score, that.numCards, that,
-      //   true, that.score ==== that.numCards);
-      // completedEvent.data.statement.result.duration = 'PT' + (Math.round(
-      //   that.timer.getTime() / 10) / 100) + 'S';
-      // that.trigger(completedEvent);
-      //for implementing question contract
-      let xAPIEvent = that.createXAPIEventTemplate('answered');
-      that.addQuestionToXAPI(xAPIEvent);
-      that.addResponseToXAPI(xAPIEvent);
-      that.trigger(xAPIEvent);
-      that.trigger('resize');
-    };
-
-    that.createRetryButton = function () {
-      if (that.params.behaviour.enableRetry) {
-        that.$retry = UI.createButton({
-          title: 'Retry',
-          'class': 'h5p-image-sequencing-retry',
-          click: that.resetTask,
-          html: '<span><i class="fa fa-undo" aria-hidden="true"></i></span>&nbsp;' +
-           that.params.l10n.tryAgain
-        });
-        that.$retry.appendTo(that.$footerContainer);
-      }
-    }
-
-
-    /**
-     * Get xAPI data.
-     * Contract used by report rendering engine.
+     * getXAPIData - Get xAPI data.
      *
      * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-6}
+     * @returns {Object} xApi data statement
      */
     that.getXAPIData = function () {
       let xAPIEvent = that.createXAPIEventTemplate('answered');
@@ -127,14 +46,15 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * Add the question itthat to the definition part of an xAPIEvent
+     * addQuestionToXAPI - Add the question to the definition part of an xAPIEvent
+     *
+     * @param {H5P.XAPIEvent} xAPIEvent
      */
     that.addQuestionToXAPI = function (xAPIEvent) {
       let definition = xAPIEvent.getVerifiedStatementValue(['object',
         'definition'
       ]);
       definition.description = {
-        // Remove tags, must wrap in div tag because jQuery 1.9 will crash if the string isn't wrapped in a tag.
         'en-US': that.params.taskDescription
       };
       definition.type =
@@ -142,212 +62,62 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       definition.interactionType = 'sequencing';
       definition.correctResponsesPattern = [];
       definition.choices = [];
-      for (let i = 0; i <that.params.sequenceImages.length; i++) {
-        definition.choices[i] = {
-          'id': 'item_' + i + '',
+
+      that.sequencingCards.forEach(function (card,index) {
+        definition.choices[index] = {
+          'id': 'item_' + card.uniqueId + '',
           'description': {
-            // Remove tags, must wrap in div tag because jQuery 1.9 will crash if the string isn't wrapped in a tag.
-            'en-US':  that.shuffledCards[i].description
+            'en-US':  card.description
           }
         };
-        if (i === 0) {
-          definition.correctResponsesPattern[0] = 'item_' + i + '[,]';
+
+        if (index === 0) {
+          definition.correctResponsesPattern[0] = 'item_' + card.uniqueId + '[,]';
         }
-        else if (i ===that.params.sequenceImages.length - 1) {
-          definition.correctResponsesPattern[0] += 'item_' + i;
+        else if (index === that.sequencingCards.length - 1) {
+          definition.correctResponsesPattern[0] += 'item_' + card.uniqueId;
         }
         else {
-          definition.correctResponsesPattern[0] += 'item_' + i + '[,]';
+          definition.correctResponsesPattern[0] += 'item_' + card.uniqueId + '[,]';
         }
-      }
+      });
     };
 
     /**
-     * Add the response part to an xAPI event
+     * addResponseToXAPI - Add the response part to an xAPI event
      *
      * @param {H5P.XAPIEvent} xAPIEvent
-     *  The xAPI event we will add a response to
      */
     that.addResponseToXAPI = function (xAPIEvent) {
       let maxScore = that.getMaxScore();
       let score = that.getScore();
       let success = (score === maxScore);
       let response = [''];
-      for (let i = 0; i < that.shuffledCards.length; i++) {
+
+      that.sequencingCards.forEach(function (card) {
         if (response[0] !== '') {
           response[0] += '[,]';
         }
-        response[0] += 'item_' + that.shuffledCards[i].seqNo;
-      }
+        response[0] += 'item_' + card.seqNo;
+      });
+
       xAPIEvent.setScoredResult(score, maxScore, that, true, success);
       xAPIEvent.data.statement.result.response = response;
     };
 
-
-    /**
-     * function that triggered upon clicking show solutions button
-     */
-    that.showSolutions = function () {
-      let orderedCards = [];
-      for (let i = 0; i < that.numCards; i++) {
-        for (let j = 0; j < that.numCards; j++) {
-          if (that.shuffledCards[j].seqNo === i) {
-            orderedCards.push(that.shuffledCards[j]);
-            break;
-          }
-        }
-      }
-      that.shuffledCards = orderedCards;
-      that.$wrapper.empty();
-      that.isShowSolution = true;
-      that.timer.stop();
-      for ( i = 0; i < that.numCards; i++) {
-        if (that.cardsToUse[i].audio && that.cardsToUse[i].audio.stop) {
-          that.cardsToUse[i].audio.stop();
-          that.cardsToUse[i].$audio.find('.h5p-audio-inner').addClass(
-            'audio-disabled');
-        }
-      }
-      that.attach(that.$wrapper);
-      that.$list.sortable("disable");
-      that.isGamePaused = true; //disable sortable functionality and create the retry button
-      that.createRetryButton();
-      that.trigger('resize');
-    };
-
-    /**
-     * shuffle the cards before the game starts or restarts
-     */
-    that.shuffleCards = function () {
-      let numPicket = 0;
-      let pickedCardsMap = {};
-      that.shuffledCards = [];
-      while (numPicket < that.cardsToUse.length) {
-        let pickIndex = Math.floor(Math.random() * that.cardsToUse.length);
-        if (pickedCardsMap[pickIndex]) {
-          continue; // Already picked, try again!
-        }
-        that.shuffledCards.push(that.cardsToUse[pickIndex]);
-        pickedCardsMap[pickIndex] = true;
-        numPicket++;
-      }
-    };
-
-
-
-    /**
-     * key board navigation
-     * @param  {number} direction
-     */
-    let createItemChangeFocusHandler = function (direction) {
-
-      return function () {
-
-
-        let currentItem = this;
-        for (let i = 0; i < that.numCards; i++) {
-          if (that.shuffledCards[i] === currentItem) {
-            let nextItem = that.shuffledCards[i + direction];
-            let nextIndex = i + direction;
-            if (!nextItem) {
-              return;
-            }
-
-            if (currentItem.isSelected) {
-              if (that.isGamePaused) {
-                //for disabling the effect of selection in show solution mode
-                currentItem.setSelected();
-                currentItem.makeUntabbable();
-                nextItem.setFocus();
-                return;
-              }
-              swapCards(i, nextIndex);
-              let tempDesc= currentItem.description?currentItem.description:'sequencing item';
-              currentItem.$card.attr('aria-label','Moved'+tempDesc+ 'from '+(i+1)+'to '+(nextIndex+1));
-              currentItem.setFocus();
-              that.counter.increment();
-              that.isAttempted = true;
-              return false;
-            }
-            else {
-              currentItem.makeUntabbable();
-              nextItem.setFocus();
-            }
-
-
-          }
-        }
-      };
-    };
-
-
-
-    /**
-     * updating shuffled cards based on keyboard movements
-     *
-     * @param  {number} firstPos
-     * @param  {number} secondPos
-     */
-    let swapCards = function (firstPos, secondPos) {
-      let i = firstPos;
-      let j = secondPos;
-      if (i < j) {
-        that.shuffledCards[i].$card.insertAfter(that.shuffledCards[j].$card);
-      }
-      else {
-        that.shuffledCards[j].$card.insertAfter(that.shuffledCards[i].$card);
-      }
-      // that.shuffledCards.swapItems(firstPos, secondPos);
-
-      that.shuffledCards[firstPos] = that.shuffledCards.splice(secondPos, 1, that.shuffledCards[firstPos])[0]; // Swap items
-    };
-
-
-    // /**
-    //  * Array.prototype.swapItems -swapping within an array
-    //  *
-    //  * @param  {ArrayElement} a
-    //  * @param  {ArrayElement} b
-    //  * @return {Array}
-    //  */
-    // Array.prototype.swapItems = function (a, b) {
-    //   this[a] = this.splice(b, 1, this[a])[0];
-    //   return this;
-    // };
-
-
-    /**
-     * function that triggers when sortupdate happens on the list
-     * used for updating the shuffled list based on the movements made with mouse
-     * @param  {Array} order
-     */
-    let sortUpdate = function (order) {
-      let newList = [];
-      for (let i = 0; i < that.numCards; i++) {
-        for (let j = 0; j < that.numCards; j++) {
-          if (that.shuffledCards[j].seqNo === parseInt(order[i].split('_')[1])) {
-            newList.push(that.shuffledCards[j]);
-            continue;
-          }
-        }
-      }
-      that.shuffledCards = newList;
-    };
-
     // implementing question contract.
 
-
     /**
-     * check whether user is able to play the game
+     * getAnswerGiven - check whether user is able to play the game
      *
-     * @return {boolean}
+     *  @return {boolean}
      */
     that.getAnswerGiven = function () {
       return that.isAttempted;
     };
 
     /**
-     * return the score obtained
+     *  getScore - return the score obtained
      *
      * @return {number}
      */
@@ -355,9 +125,8 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       return that.score;
     };
 
-
     /**
-     * return the maximum possible score that can be obtained
+     * getMaxScore - turn the maximum possible score that can be obtained
      *
      * @return {number}
      */
@@ -365,129 +134,176 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       return that.numCards;
     };
 
-
     /**
-     * function that gets triggered when retry button is pressed
-     *
-     * @return {type}  description
+     * stopAudio - check each card and disable audio if it is enabled
      */
-    that.resetTask = function () {
-      that.$wrapper.empty();
-      that.shuffleCards();
-      that.isRetry = true;
-      that.isShowSolution = false;
-      that.isGamePaused = false;
-      that.attach(that.$wrapper);
+    that.stopAudio = function () {
+      that.sequencingCards.forEach(function (card) {
+        if (card.audio && card.audio.stop) {
+          card.audio.stop();
+          card.$audio.find('.h5p-audio-inner').addClass(
+            'audio-disabled');
+        }
+      });
     };
 
-
-
     /**
-     * Initialize the cards to be used in the game
-     */
-    that.cardsToUse = that.params.sequenceImages
-      .filter(function (params) {
-        return ImageSequencing.Card.isValid(params);
-      })
-      .map(function (params, i) {
-        return new ImageSequencing.Card(params, id, i,
-          that.params.l10n.audioNotSupported);
-      });
-
-    that.shuffleCards();
-    that.numCards = that.shuffledCards.length;
-
-
-
-    /**
-     * Attach this game's html to the given container.
+     * refreshTask - refreshing the DOM for both retry and resume
      *
-     * @param {H5P.jQuery} $container
+     * @returns {type} Description
      */
-    that.attach = function ($container) {
+    that.refreshTask = function () {
+      that.isRefresh = true;
+      that.isShowSolution = false;
+      that.isGamePaused = false;
 
-      that.triggerXAPI('attempted');
-      that.$wrapper = $container.addClass('h5p-image-sequencing').html('');
-      $('<div class="h5p-task-description" aria-label="'+that.params.altTaskDescription+'" tabindex="0">' +that.params.taskDescription +
-        '</div>').appendTo($container);
-      that.$list = $('<ul class="sortable" role="listbox"/>');
-      for (let i = 0; i < that.numCards; i++) {
-        that.shuffledCards[i].appendTo(that.$list);
-        if (!that.isRetry && !that.isResume && !that.isShowSolution) {
+      that.score=0;
+      that.$progressBar.reset();
+
+      that.$list.detach();
+      if (that.$resumeButton) {
+        that.$resumeButton = that.$resumeButton.detach();
+      }
+      if (that.$retryButton) {
+        that.$retryButton = that.$retryButton.detach();
+      }
+      that.$feedbackContainer.removeClass('sequencing-feedback-show');
+
+
+      that.buildCardsDOM();
+      that.$submitButton.appendTo(that.$buttonContainer);
+      if (that.params.behaviour.enableSolution) {
+        that.$showSolutionButton.appendTo(that.$buttonContainer);
+      }
+      that.rebuildDOM();
+      that.activateSortableFunctionality();
+      that.$list.focus();
+      that.sequencingCards[0].makeTabbable();
+      that.trigger('resize');
+    };
+
+    /**
+     * rebuildDOM - restructure the game layout whenever needed
+     *
+     */
+    that.rebuildDOM = function () {
+      that.$list.appendTo(that.$wrapper);
+      that.$footerContainer.appendTo(that.$wrapper);
+      that.trigger('resize');
+    };
+
+    /**
+     * buildCardsDOM - rebuilding the cards list and register assoicated event handlers
+     *
+     * @returns {type} Description
+     */
+    that.buildCardsDOM = function () {
+      that.$list = $('<ul class="sortable" role="listbox" tabindex="0"/>');
+      that.sequencingCards.forEach((card)=>{
+        card.appendTo(that.$list);
+        if (!that.isRefresh && !that.isShowSolution) {
           //else events are already registered.
-          that.shuffledCards[i].on('selected',function () {
+          card.on('selected',function () {
             if (!that.isGamePaused) {
               that.timer.play();
             }
           });
-
-          that.shuffledCards[i].on('next', createItemChangeFocusHandler(1));
-          that.shuffledCards[i].on('prev', createItemChangeFocusHandler(-1));
+          card.on('next', createItemChangeFocusHandler(1));
+          card.on('prev', createItemChangeFocusHandler(-1));
         }
         if (that.isShowSolution) {
-          that.shuffledCards[i].setSolved();
+          card.setSolved();
         }
-      }
-      if (that.$list.children().length) {
-        that.$list.appendTo($container);
-        that.shuffledCards[0].setFocus();
+      });
+    };
 
-        that.$footerContainer = $('<div class="footer-container"  />');
-        that.$feedbackContainer = $('<div class="sequencing-feedback"/>');
-        that.$buttonContainer = $(
-          '<div class="sequencing-feedback-show" />');
-        that.$feedback = $('<div class="feedback-element" ></div>');
-        if (!that.isResume && !that.isShowSolution) {
-          //else persist existing timer and counter values
-          that.$status = $('<dl class="sequencing-status" aria-label="game status" tabindex="0" role="group">' + '<dt id="timeSpent" role="term" tabindex="0">' +
-           that.params.l10n.timeSpent + '</dt>' +
-            '<dd class="h5p-time-spent" tabindex="0">0:00</dd>' +
-            '<dt role="term" tabindex="0">' +that.params.l10n.totalMoves + '</dt>' +
-            '<dd  tabindex="0" class="h5p-submits">0</dd>' + '</dl>');
-          that.timer = new ImageSequencing.Timer(that.$status.find(
-            '.h5p-time-spent')[0]); //Initialize timer
-          that.counter = new ImageSequencing.Counter(that.$status.find(
-            '.h5p-submits')); //Initialize counter
-        }
-        else {
-          that.isResume = false;
-        }
-        that.$status.appendTo(that.$footerContainer);
-        that.$progressBar = UI.createScoreBar(that.numCards,
-          'scoreBarLabel');
-        that.$feedback.attr('tabindex', '0');
-        that.$feedback.appendTo(that.$feedbackContainer);
-        that.$progressBar.appendTo(that.$feedbackContainer);
-        that.$feedbackContainer.appendTo(that.$footerContainer);
+    /**
+     * createButton - creating buttons for check,show solution, retry and resume
+     *
+     * @param {string} name     button title
+     * @param {string} icon     fa icon name
+     * @param {string} param    button text
+     * @param {function} callback   callback function
+     *
+     * @returns {JoubelUI.Button}
+     */
+    that.createButton = function (name,icon,param,callback) {
+      return UI.createButton({
+        title: name,
+        click: callback,
+        html: '<span><i class="fa fa-'+icon+'" aria-hidden="true"></i></span>&nbsp;' +
+                param
+      });
+    };
 
-        if (!that.isShowSolution) {
-          //not on showSolution mode
-          that.$submit = UI.createButton({
-            title: 'Submit',
-            click: that.gameSubmitted,
-            html: '<span><i class="fa fa-check" aria-hidden="true"></i></span>&nbsp;' +
-             that.params.l10n.checkAnswer
-          });
-          that.$submit.appendTo(that.$buttonContainer);
-          if (that.params.behaviour.enableSolutionsButton) {
-            that.$showSolution = UI.createButton({
-              title: 'Submit',
-              click: that.showSolutions,
-              html: '<span><i class="fa fa-eye" aria-hidden="true"></i></span>&nbsp;' +
-               that.params.l10n.showSolution
-            });
-            that.$showSolution.appendTo(that.$buttonContainer);
-          }
-        }
-        that.$buttonContainer.appendTo(that.$footerContainer);
-        that.$footerContainer.appendTo($container);
+    /**
+     * buildDOMFrame - building the games different DOM Parts
+     *
+     */
+    that.buildDOMFrame = function () {
+      that.$taskDescription = $('<div/>',{
+        class: 'h5p-task-description',
+        tabindex: '0',
+        html: that.params.taskDescription,
+        'aria-label': that.params.altTaskDescription
+      });
+
+      that.buildCardsDOM();
+
+      that.$timer = $('<span/>',{
+        html: '<dt role="term" >'+that.params.l10n.timeSpent + '</dt >'+
+          '<dd role="definition"  class="h5p-time-spent" >0:00</dd>'
+      });
+
+      that.$counter= $('<span/>',{
+        html:  '<span><dt role="term" >' +that.params.l10n.totalMoves + '</dt>' +
+        '<dd role="definition"  class="h5p-submits">0</dd>'
+      });
+
+      that.timer = new ImageSequencing.Timer(that.$timer.find('.h5p-time-spent'));
+      that.counter = new ImageSequencing.Counter(that.$counter.find('.h5p-submits'));
+
+      that.$progressBar = UI.createScoreBar(that.numCards,'scoreBarLabel');
+
+      that.$submitButton = that.createButton('submit','check',that.params.l10n.checkAnswer,that.gameSubmitted);
+      if (that.params.behaviour.enableSolution) {
+        that.$showSolutionButton = that.createButton('solution','eye',that.params.l10n.showSolution,that.showSolutions);
       }
-      //make the list sortable using jquery ui sortable
+      if (that.params.behaviour.enableRetry) {
+        that.$retryButton = that.createButton('retry','undo',that.params.l10n.tryAgain,that.resetTask);
+      }
+      if (that.params.behaviour.enableResume) {
+        that.$resumeButton = that.createButton('resume','redo',that.params.l10n.resume,that.resumeTask);
+      }
+
+      that.$statusContainer = $('<dl/>',{
+        class: 'sequencing-status',
+        title: 'game status',
+        role: 'group',
+        tabindex: '0'
+      });
+
+      that.$feedback = $('<div/>',{
+        classs: 'feedback-element',
+        tabindex: '0'
+      });
+
+      that.$footerContainer = $('<div class="footer-container"  />');
+      that.$feedbackContainer = $('<div class="sequencing-feedback"/>');
+      that.$buttonContainer = $('<div class="sequencing-feedback-show" />');
+    };
+
+
+    /**
+       * activateSortableFunctionality -  activate the sortable functionality on the cards list
+         *
+    */
+    that.activateSortableFunctionality = function () {
       that.$list.sortable({
         placeholder: "sequencing-dropzone",
         tolerance: "pointer",
         helper: "clone",
-        containment: $container,
+        containment: that.$wrapper,
         start: function (event, ui) {
           $(ui.helper).addClass("ui-sortable-helper");
           that.timer.play();
@@ -498,7 +314,11 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         },
         update: function (event, ui) {
           let order = that.$list.sortable("toArray");
-          sortUpdate(order);
+          that.sequencingCards = that.sequencingCards.map((card,index)=>{
+            return (that.sequencingCards.filter((cardItem)=>{
+              return cardItem.uniqueId === parseInt(order[index].split('_')[1]);
+            }))[0];
+          });
         },
       });
       //for preventing clicks on each sortable element
@@ -511,11 +331,234 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         }
       });
     };
-    // registering the H5P.ImageSequencingObject to handle the resize event
-    if (that.level) {
-      // that.on('resize', scaleGameSize);
+
+
+    /**
+     * gameSubmitted - when the user clicks on check button
+     *
+     */
+    that.gameSubmitted = function () {
+      that.isSubmitted = true;
+      that.isGamePaused = true;
+      that.timer.stop();
+      that.$list.sortable("disable");
+      that.stopAudio();
+
+      that.sequencingCards.forEach(function (card , index) {
+        if (index === card.seqNo) {
+          that.score++;
+          card.setCorrect();
+        }
+        else {
+          card.setIncorrect();
+        }
+      });
+
+      that.$progressBar.setScore(that.score);
+      let scoreText = that.params.l10n.score.replace('@score', that.score).replace(
+        '@total', that.numCards);
+      that.$feedback.html(scoreText);
+
+      that.$submitButton = that.$submitButton.detach();
+      if (that.$showSolutionButton) {
+        that.$showSolutionButton= that.$showSolutionButton.detach();
+      }
+
+      if (that.score != that.numCards) {
+        if (that.params.behaviour.enableRetry) {
+          that.$retryButton.appendTo(that.$buttonContainer);
+        }
+        if (that.params.behaviour.enableResume) {
+          that.$resumeButton.appendTo(that.$buttonContainer);
+        }
+      }
+      that.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
+      that.$feedback.focus();
+
+      /* xApi Section
+      // either completed or answered xAPI is required. Assuming answerd , disabling completed
+      // let completedEvent = that.createXAPIEventTemplate('completed');
+      // completedEvent.setScoredResult(that.score, that.numCards, that,
+      //   true, that.score ==== that.numCards);
+      // completedEvent.data.statement.result.duration = 'PT' + (Math.round(
+      //   that.timer.getTime() / 10) / 100) + 'S';
+      // that.trigger(completedEvent);
+      //for implementing question contract
+      */
+
+      let xAPIEvent = that.createXAPIEventTemplate('answered');
+      that.addQuestionToXAPI(xAPIEvent);
+      that.addResponseToXAPI(xAPIEvent);
+      that.trigger(xAPIEvent);
       that.trigger('resize');
-    }
+    };
+
+    /**
+     * showSolutions - triggered when user click on show solution button
+     */
+    that.showSolutions = function () {
+      that.isRefresh = true;
+      that.isGamePaused = true;
+      that.timer.stop();
+      that.stopAudio();
+
+      that.$list.detach();
+      that.$submitButton= that.$submitButton.detach();
+      that.$showSolution = that.$showSolutionButton.detach();
+
+      // need to arrange the list in correct order
+      that.sequencingCards = that.sequencingCards.map((card,index) => {
+        return (that.sequencingCards.filter((cardElement)=> {
+          return cardElement.seqNo === index;
+        }))[0];
+      });
+
+      that.buildCardsDOM();
+      if (that.params.behaviour.enableRetry) {
+        that.$retryButton.appendTo(that.$buttonContainer);
+      }
+      that.rebuildDOM();
+      that.sequencingCards[0].setFocus();
+      that.trigger('resize');
+    };
+
+    /**
+     * resetTask - function that gets triggered when retry button is pressed
+     */
+    that.resetTask = function () {
+      that.isRetry = true;
+      that.timer.reset();
+      that.counter.reset();
+      H5P.shuffleArray(that.sequencingCards);
+      that.refreshTask();
+    };
+
+    /**
+     * resumeTask - triggered when user clicks the resume button
+     */
+    that.resumeTask = function () {
+      that.isRetry = false;
+      that.sequencingCards.forEach((card)=> card.reset() );
+      that.refreshTask();
+    };
+
+    /**
+     * createItemChangeFocusHandler - key board navigation focus handler
+     *
+     * @param {number} direction +1 for forward and -1 for backward
+     *
+     * @returns {function} function that handles the focus changing functionality
+     */
+    let createItemChangeFocusHandler = function (direction) {
+
+      return function () {
+        let currentItem = this;
+        for (let currentIndex = 0; currentIndex < that.numCards; currentIndex++) {
+          if (that.sequencingCards[currentIndex] === currentItem) {
+            let nextItem = that.sequencingCards[currentIndex + direction];
+            let nextIndex = currentIndex + direction;
+            if (!nextItem) {
+              //end of list return
+              return;
+            }
+
+            if (currentItem.isSelected) {
+              if (that.isGamePaused) {
+                //for disabling the effect of selection in show solution mode
+                currentItem.setSelected();
+                currentItem.makeUntabbable();
+                nextItem.setFocus();
+                return;
+              }
+
+              // swapping cards at currentIndex and nextIndex
+              if (currentIndex < nextIndex) {
+                that.sequencingCards[currentIndex].$card.insertAfter(that.sequencingCards[nextIndex].$card);
+              }
+              else {
+                that.sequencingCards[nextIndex].$card.insertAfter(that.sequencingCards[currentIndex].$card);
+              }
+              that.sequencingCards[currentIndex] = that.sequencingCards.splice(nextIndex, 1, that.sequencingCards[currentIndex])[0];
+
+
+              let tempDesc= currentItem.description?currentItem.description:'sequencing item';
+              currentItem.$card.attr('aria-label','Moved '+tempDesc+ 'from '+(currentIndex+1)+'to '+(nextIndex+1));
+              currentItem.setFocus();
+              that.counter.increment();
+              that.isAttempted = true;
+              return false;
+            }
+            else {
+              currentItem.makeUntabbable();
+              nextItem.setFocus();
+            }
+          }
+        }
+      };
+    };
+
+    /**
+     * Initialize the cards to be used in the game
+     */
+
+    //creating an array of unique identifiers for each card in the list
+    let uniqueIndexes = Array.apply(null, {length:that.params.sequenceImages.length}).map(Function.call, Number);
+    H5P.shuffleArray(uniqueIndexes);
+
+    that.sequencingCards = that.params.sequenceImages
+      .filter(function (params) {
+        return ImageSequencing.Card.isValid(params);
+      })
+      .map(function (params, i) {
+        return new ImageSequencing.Card(params, id, i,
+          that.params.l10n.audioNotSupported,uniqueIndexes[i]);
+      });
+
+    H5P.shuffleArray(that.sequencingCards);
+    that.numCards = that.sequencingCards.length;
+    that.buildDOMFrame();
+
+
+    /**
+     * attach - Attach this game's html to the given container.
+     *
+     *  @param {H5P.jQuery} $container
+     */
+    that.attach = function ($container) {
+
+      that.triggerXAPI('attempted');
+      that.$wrapper= $container.addClass('h5p-image-sequencing');
+
+      if (that.$list.children().length) {
+        //add elements to status container
+        that.$timer.appendTo(that.$statusContainer);
+        that.$counter.appendTo(that.$statusContainer);
+
+        //add elements to feedbackContainer
+        that.$feedback.appendTo(that.$feedbackContainer);
+        that.$progressBar.appendTo(that.$feedbackContainer);
+
+        //add elements to buttonContainer
+        that.$submitButton.appendTo(that.$buttonContainer);
+        if (that.params.behaviour.enableSolution) {
+          that.$showSolutionButton.appendTo(that.$buttonContainer);
+        }
+
+        //append status and feedback and button containers to footer
+        that.$statusContainer.appendTo(that.$footerContainer);
+        that.$feedbackContainer.appendTo(that.$footerContainer);
+        that.$buttonContainer.appendTo(that.$footerContainer);
+
+        //append description , cards and footer to main container.
+        that.$taskDescription.appendTo($container);
+        that.$list.appendTo($container);
+        that.$footerContainer.appendTo($container);
+
+        that.sequencingCards[0].setFocus();
+        that.activateSortableFunctionality();
+        that.trigger('resize');
+      }
+    };
   }
   // Extends the event dispatcher
   ImageSequencing.prototype = Object.create(EventDispatcher.prototype);

@@ -5,32 +5,34 @@
    *
    * @class H5P.ImageSequencing.Card
    * @extends H5P.EventDispatcher
-   * @param {Object} image
+   * @param {Object} cardParams
    * @param {number} id
    * @param {number} seqNumber
-   * @param {string} imageDescription
+   * @param {string} unsupportedAudio
+   * @param {number} uniqueId
    */
-  ImageSequencing.Card = function (cardParams, id, seqNumber, unsupportedAudio) {
+  ImageSequencing.Card = function (cardParams, id, seqNumber, unsupportedAudio,uniqueId) {
+
     /** @alias H5P.ImageSequencing.Card# */
     let that = this;
-    // Initialize event inheritance
-    EventDispatcher.call(that);
     let path = H5P.getPath(cardParams.image.path, id);
+    let audio = cardParams.audio;
+    let imageDesc = (cardParams.imageDescription !== undefined) ? cardParams.imageDescription : '';
+
+    that.uniqueId = uniqueId;
     that.seqNo = seqNumber;
     that.isSelected = false;
-    that.description = cardParams.imageDescription;
-    let audio = cardParams.audio;
-    let html = (that.description !== undefined) ? that.description : '';
 
 
+    // Initialize event inheritance
+    EventDispatcher.call(that);
 
 
     /**
-     * that - create a container with audio files
+     * createAudioWrapper - create a container with audio files
      *
      * @return {H5P.jQuery}  $audioWrapper
      */
-
     that.createAudioWrapper = function () {
       let audioObj;
       let $audioWrapper = $('<div>', {
@@ -53,13 +55,11 @@
         $audioWrapper.addClass('hide');
       }
       that.audio = audioObj;
-
-
       return $audioWrapper;
     };
 
     /**
-     * assign the correctly positioned card with class correct
+     * setCorrect - assign the correctly positioned card with class correct
      */
     that.setCorrect = function () {
       that.$card.removeClass('sequencing-incorrect').addClass(
@@ -68,9 +68,8 @@
         'sequencing-incorrect-mark').addClass('sequencing-correct-mark');
     };
 
-
     /**
-     * mark the card as solved
+     * setSolved - mark the card as solved
      */
     that.setSolved = function () {
       that.$card.removeClass('sequencing-incorrect').addClass(
@@ -78,7 +77,7 @@
     };
 
     /*
-     * assign the incorrectly positioned card with class incorrect
+     * setIncorrect - assign the incorrectly positioned card with class incorrect
      */
     that.setIncorrect = function () {
       that.$card.removeClass('sequencing-correct').addClass(
@@ -88,7 +87,17 @@
     };
 
     /**
-     * toggle between selected and unselected states
+     * reset - reset each card to its default state
+     */
+    that.reset = function () {
+      that.$card.removeClass('sequencing-correct').removeClass(
+        'sequencing-incorrect');
+      that.$card.find('.sequencing-mark').removeClass(
+        'sequencing-correct-mark').removeClass('sequencing-incorrect-mark');
+    };
+
+    /**
+     * setSelected - toggle between selected and unselected states
      */
     that.setSelected = function () {
       if (!that.isSelected) {
@@ -118,7 +127,7 @@
     };
 
     /**
-     *  Make card tabbable and move focus to it
+     *  setFocus - Make card tabbable and move focus to it
      */
     that.setFocus = function () {
       that.makeTabbable();
@@ -126,7 +135,7 @@
     };
 
     /**
-     *  Prevent tabbing to the card
+     *  makeUntabbable - Prevent tabbing to the card
      */
     that.makeUntabbable = function () {
       if (that.$card) {
@@ -145,24 +154,36 @@
       that.$audio = that.createAudioWrapper();
       //disable tabbing the audio button under normal circumstances
       that.$audio.find('button').attr('tabindex','-1');
-      let $card = $('<li class="sequencing-item draggabled" id="item_' +
-        seqNumber + '" role="option"  aria-label="'+(that.description?that.description:"sequencing item")+'" >' +
-        '<span class="sequencing-mark"></span></li>');
-      let $image = $('<div class="image-container">' +
-        '<img src="' + path + '"/>' +
-        '</div>' +
-        '<div class="image-desc" data-title="'+html+'">' +
-        '<span class="text">' + html + '</span>' +
-        '</div>');
+      let label = that.description?that.description:'sequencing item';
+
+      let $cardContainer = $('<li/>',{
+        class: 'sequencing-item draggabled',
+        id: 'item_'+that.uniqueId,
+        role: 'option',
+        'aria-label': label,
+        html: '<span class="sequencing-mark"></span>'
+      });
+
+      let $image = $('<div/>',{
+        class: 'image-container',
+        html: '<img src="' + path + '"/>'
+      });
+
+      let $description = $('<div/>',{
+        class: 'image-desc',
+        'data-tilte': imageDesc,
+        html: '<span class="text">' + imageDesc + '</span>'
+      });
 
 
-      $card.append(that.$audio);
-      $card.append($image);
-      that.$card = $card;
-      that.$card.attr('role','group').attr('aria-label','sequencing item');
+      //grouping audio and image in a group
+      that.$sequencingElement= $('<span role="group" />').append(that.$audio).append($image).append($description);
+      $cardContainer.append(that.$sequencingElement);
+      that.$card = $cardContainer;
+
 
       // for tooltip functionality
-      $card.find('.image-desc').on('click',function (event) {
+      $cardContainer.find('.image-desc').on('click',function () {
         let $this = $(this);
         if (this.offsetWidth < this.scrollWidth) {
           $this.tooltip('option','content',$this.find('.text').html());
@@ -171,7 +192,7 @@
         $(this).tooltip('enable').tooltip('open');
       });
 
-      $card.find('.image-desc').tooltip({
+      $cardContainer.find('.image-desc').tooltip({
         items:'[data-title]',
         content:'',
         show: null,

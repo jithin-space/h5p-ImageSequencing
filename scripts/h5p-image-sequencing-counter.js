@@ -1,20 +1,23 @@
 (function (ImageSequencing) {
+
   /**
-   * Keeps track of the number of times the game is submitted
+   * ImageSequencing.Counter - Keeps track of the number of times the game is submitted
    *
    * @class H5P.ImageSequencing.Counter
    * @param {H5P.jQuery} $container
    */
-
   ImageSequencing.Counter = function ($container) {
+
     /** @alias H5P.ImageSequencing.Counter# */
-    var self = this;
-    var current = 0;
+    let self = this;
+    let current = 0;
+
     /**
+     * update - update the counter
      * @private
      */
-    var update = function () {
-      $container[0].innerText = current;
+    let update = function () {
+      $container.text(current);
     };
 
     /**

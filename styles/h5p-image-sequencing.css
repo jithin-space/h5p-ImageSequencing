@@ -219,6 +219,7 @@ border-bottom: 1px solid #dde4ea;
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+    pointer-events: none;
 }
 .ui-sortable-helper .item {
     border: solid 3px #5c99de;

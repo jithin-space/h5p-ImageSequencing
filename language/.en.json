@@ -6,6 +6,11 @@
       "description":"A guide telling the user how to solve this task."
     },
     {
+      "label": "Alternate Task Description",
+      "default": "Make the following list be ordered correctly. Use the cursor keys to navigate through the list items, use space to activate or deactivate an item and the cursor keys to move it",
+      "description": "A guide intended for visually impaired user on how to solve this task."
+    },
+    {
         "label":"Images",
         "entity":"image",
         "field":{
@@ -15,8 +20,8 @@
               "label": "Image"
             },
             {
-              "label":"Image Description (At Max 30 char)",
-              "description":"An image description if they cannot recognize the image"
+              "label":"imageDescription",
+              "description":"An image description if user cannot recognize the image"
             },
             {
               "label": "Audio files",
@@ -50,10 +55,6 @@
         {
           "label":"Time spent text",
           "default":"Time spent"
-        },
-        {
-          "label":"Dropper Text",
-          "default":"Please Drop"
         },
         {
           "label": "Feedback text",
