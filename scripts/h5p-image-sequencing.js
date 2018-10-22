@@ -312,7 +312,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         stop: function (event, ui) {
           $(ui.helper).removeClass("ui-sortable-helper");
         },
-        update: function (event, ui) {
+        update: function () {
           let order = that.$list.sortable("toArray");
           that.sequencingCards = that.sequencingCards.map((card,index)=>{
             return (that.sequencingCards.filter((cardItem)=>{
@@ -325,7 +325,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       that.$list.disableSelection();
       // capturing the drop event on sortable
       that.$list.find("li").droppable({
-        drop: function (event, ui) {
+        drop: function () {
           that.counter.increment();
           that.isAttempted = true;
         }

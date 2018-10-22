@@ -171,7 +171,7 @@
 
       let $description = $('<div/>',{
         class: 'image-desc',
-        'data-tilte': that.imageDesc,
+        'data-title': that.imageDesc,
         html: '<span class="text">' + that.imageDesc + '</span>'
       });
 
@@ -211,7 +211,7 @@
         },
         // disabled by default
         disabled: true,
-        close: function ( event, ui ) {
+        close: function () {
           $(this).tooltip('disable');
         }
       });
