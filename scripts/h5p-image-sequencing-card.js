@@ -8,17 +8,17 @@
    * @param {Object} cardParams
    * @param {number} id
    * @param {number} seqNumber
-   * @param {string} unsupportedAudio
+   * @param {Object} extraParams
    * @param {number} uniqueId
    */
-  ImageSequencing.Card = function (cardParams, id, seqNumber, unsupportedAudio,uniqueId) {
+  ImageSequencing.Card = function (cardParams, id, seqNumber,extraParams,uniqueId) {
 
     /** @alias H5P.ImageSequencing.Card# */
     let that = this;
     let path = H5P.getPath(cardParams.image.path, id);
     let audio = cardParams.audio;
-    let imageDesc = (cardParams.imageDescription !== undefined) ? cardParams.imageDescription : '';
 
+    that.imageDesc = (cardParams.imageDescription !== undefined) ? cardParams.imageDescription : '';
     that.uniqueId = uniqueId;
     that.seqNo = seqNumber;
     that.isSelected = false;
@@ -42,7 +42,7 @@
       if (audio !== undefined) {
         let audioDefaults = {
           files: audio,
-          audioNotSupported: unsupportedAudio
+          audioNotSupported: extraParams.audioNotSupported
         };
         audioObj = new H5P.Audio(audioDefaults, id);
         audioObj.attach($audioWrapper);
@@ -104,14 +104,14 @@
         that.isSelected = true;
         that.$card.addClass('selected');
         that.$card.attr('aria-selected',true);
-        that.$audio.find('button').attr('tabindex','0').attr('aria-label','play the corresponding audio').attr('role','button');
+        that.$audio.find('button').attr('tabindex','0').attr('aria-label',extraParams.ariaPlay).attr('role','button');
         that.trigger('selected');
       }
       else {
         that.isSelected = false;
         that.$card.removeClass('selected');
         that.$card.attr('aria-selected','');
-        that.$card.attr('aria-label',(that.description?that.description:"sequencing item"));
+        that.$card.attr('aria-label',(that.imageDesc?that.imageDesc:extraParams.ariaCardDesc));
         that.$audio.find('button').attr('tabindex','-1').attr('aria-label','');
       }
     };
@@ -154,7 +154,7 @@
       that.$audio = that.createAudioWrapper();
       //disable tabbing the audio button under normal circumstances
       that.$audio.find('button').attr('tabindex','-1');
-      let label = that.description?that.description:'sequencing item';
+      let label = that.imageDesc?that.imageDesc:extraParams.ariaCardDesc;
 
       let $cardContainer = $('<li/>',{
         class: 'sequencing-item draggabled',
@@ -171,8 +171,8 @@
 
       let $description = $('<div/>',{
         class: 'image-desc',
-        'data-tilte': imageDesc,
-        html: '<span class="text">' + imageDesc + '</span>'
+        'data-tilte': that.imageDesc,
+        html: '<span class="text">' + that.imageDesc + '</span>'
       });
 
 

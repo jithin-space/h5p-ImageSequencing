@@ -149,6 +149,31 @@
         "importance": "low",
         "common": true,
         "default": "Audio Error"
+      },
+      {
+        "name": "ariaPlay",
+        "type": "text",
+        "label": "Play button (text for readspeakers)",
+        "importance": "low",
+        "common": true,
+        "default": "Play the corresponding audio"
+      },
+      {
+        "name": "ariaMoveDescription",
+        "type": "text",
+        "label": "Card moving description (text for readspeakers)",
+        "description": "@posSrc : card initial position, @posDes : card final position",
+        "importance": "low",
+        "common": true,
+        "default": "Moved @cardDesc from @posSrc to @posDes"
+      },
+      {
+        "name": "ariaCardDesc",
+        "type": "text",
+        "label": "Default Card Description (text for readspeakers)",
+        "importance": "low",
+        "common": true,
+        "default": "sequencing item"
       }
     ]
   }

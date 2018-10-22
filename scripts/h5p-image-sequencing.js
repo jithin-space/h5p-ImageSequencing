@@ -418,7 +418,8 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         that.$retryButton.appendTo(that.$buttonContainer);
       }
       that.rebuildDOM();
-      that.sequencingCards[0].setFocus();
+      that.$list.focus();
+      that.sequencingCards[0].makeTabbable();
       that.trigger('resize');
     };
 
@@ -481,8 +482,11 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
               that.sequencingCards[currentIndex] = that.sequencingCards.splice(nextIndex, 1, that.sequencingCards[currentIndex])[0];
 
 
-              let tempDesc= currentItem.description?currentItem.description:'sequencing item';
-              currentItem.$card.attr('aria-label','Moved '+tempDesc+ 'from '+(currentIndex+1)+'to '+(nextIndex+1));
+              let tempDesc= currentItem.imageDesc?currentItem.imageDesc:that.params.l10n.ariaCardDesc;
+              let moveDesc = that.params.l10n.ariaMoveDescription.replace('@cardDesc', tempDesc).replace(
+                '@posSrc', currentIndex+1).replace('@posDes',nextIndex+1);
+
+              currentItem.$card.attr('aria-label',moveDesc);
               currentItem.setFocus();
               that.counter.increment();
               that.isAttempted = true;
@@ -505,13 +509,20 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     let uniqueIndexes = Array.apply(null, {length:that.params.sequenceImages.length}).map(Function.call, Number);
     H5P.shuffleArray(uniqueIndexes);
 
+
+
     that.sequencingCards = that.params.sequenceImages
       .filter(function (params) {
         return ImageSequencing.Card.isValid(params);
       })
       .map(function (params, i) {
+        let extraParams = {
+          audioNotSupported:  that.params.l10n.audioNotSupported,
+          ariaPlay:that.params.l10n.ariaPlay,
+          ariaCardDesc: that.params.l10n.ariaCardDesc
+        };
         return new ImageSequencing.Card(params, id, i,
-          that.params.l10n.audioNotSupported,uniqueIndexes[i]);
+          extraParams,uniqueIndexes[i]);
       });
 
     H5P.shuffleArray(that.sequencingCards);
