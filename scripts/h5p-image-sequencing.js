@@ -11,7 +11,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
   function ImageSequencing(parameters, id) {
 
     /** @alias H5P.ImageSequencing# */
-    let that = this;
+    const that = this;
     that.isRetry = false;
     that.isRefresh = false;
     that.isShowSolution = false;
@@ -19,13 +19,13 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     that.isAttempted = false;
     that.score = 0;
 
-    that.params = $.extend(true,{},{
+    that.params = $.extend(true, {}, {
       l10n:{
         showSolution: "ShowSolution",
         resume: "Resume",
         audioNotSupported: "Audio Error"
       }
-    },parameters);
+    }, parameters);
 
     // Initialize event inheritance
     EventDispatcher.call(that);
@@ -37,7 +37,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
      * @returns {Object} xApi data statement
      */
     that.getXAPIData = function () {
-      let xAPIEvent = that.createXAPIEventTemplate('answered');
+      const xAPIEvent = that.createXAPIEventTemplate('answered');
       that.addQuestionToXAPI(xAPIEvent);
       that.addResponseToXAPI(xAPIEvent);
       return {
@@ -51,9 +51,9 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
      * @param {H5P.XAPIEvent} xAPIEvent
      */
     that.addQuestionToXAPI = function (xAPIEvent) {
-      let definition = xAPIEvent.getVerifiedStatementValue(['object',
-        'definition'
-      ]);
+      const definition = xAPIEvent.getVerifiedStatementValue(
+        ['object', 'definition']
+      );
       definition.description = {
         'en-US': that.params.taskDescription
       };
@@ -63,7 +63,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       definition.correctResponsesPattern = [];
       definition.choices = [];
 
-      that.sequencingCards.forEach(function (card,index) {
+      that.sequencingCards.forEach(function (card, index) {
         definition.choices[index] = {
           'id': 'item_' + card.uniqueId + '',
           'description': {
@@ -84,15 +84,15 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * addResponseToXAPI - Add the response part to an xAPI event
+     * Add the response part to an xAPI event.
      *
      * @param {H5P.XAPIEvent} xAPIEvent
      */
     that.addResponseToXAPI = function (xAPIEvent) {
-      let maxScore = that.getMaxScore();
-      let score = that.getScore();
-      let success = (score === maxScore);
-      let response = [''];
+      const maxScore = that.getMaxScore();
+      const score = that.getScore();
+      const success = (score === maxScore);
+      const response = [''];
 
       that.sequencingCards.forEach(function (card) {
         if (response[0] !== '') {
@@ -108,7 +108,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     // implementing question contract.
 
     /**
-     * getAnswerGiven - check whether user is able to play the game
+     * Check whether user is able to play the game.
      *
      *  @return {boolean}
      */
@@ -117,7 +117,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     *  getScore - return the score obtained
+     *  getScore - Return the score obtained.
      *
      * @return {number}
      */
@@ -126,7 +126,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * getMaxScore - turn the maximum possible score that can be obtained
+     * Turn the maximum possible score that can be obtained.
      *
      * @return {number}
      */
@@ -135,7 +135,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * stopAudio - check each card and disable audio if it is enabled
+     * Check each card and disable audio if it is enabled.
      */
     that.stopAudio = function () {
       that.sequencingCards.forEach(function (card) {
@@ -148,7 +148,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * refreshTask - refreshing the DOM for both retry and resume
+     * Refresh the DOM for both retry and resume.
      *
      * @returns {type} Description
      */
@@ -157,7 +157,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       that.isShowSolution = false;
       that.isGamePaused = false;
 
-      that.score=0;
+      that.score = 0;
       that.$progressBar.reset();
 
       that.$list.detach();
@@ -183,8 +183,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * rebuildDOM - restructure the game layout whenever needed
-     *
+     * Restructure the game layout whenever needed.
      */
     that.rebuildDOM = function () {
       that.$list.appendTo(that.$wrapper);
@@ -193,17 +192,17 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * buildCardsDOM - rebuilding the cards list and register assoicated event handlers
+     * Rebuild the cards list and register assoicated event handlers.
      *
      * @returns {type} Description
      */
     that.buildCardsDOM = function () {
       that.$list = $('<ul class="sortable" role="listbox" tabindex="0"/>');
-      that.sequencingCards.forEach((card)=>{
+      that.sequencingCards.forEach(function (card) {
         card.appendTo(that.$list);
         if (!that.isRefresh && !that.isShowSolution) {
           //else events are already registered.
-          card.on('selected',function () {
+          card.on('selected', function () {
             if (!that.isGamePaused) {
               that.timer.play();
             }
@@ -218,16 +217,16 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * createButton - creating buttons for check,show solution, retry and resume
+     * Create buttons for check, show solution, retry and resume.
      *
-     * @param {string} name     button title
-     * @param {string} icon     fa icon name
-     * @param {string} param    button text
-     * @param {function} callback   callback function
+     * @param {string} name - Button title.
+     * @param {string} icon - Fa icon name.
+     * @param {string} param - Button text.
+     * @param {function} callback - Callback function.
      *
      * @returns {JoubelUI.Button}
      */
-    that.createButton = function (name,icon,param,callback) {
+    that.createButton = function (name, icon, param, callback) {
       return UI.createButton({
         title: name,
         click: callback,
@@ -237,8 +236,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * buildDOMFrame - building the games different DOM Parts
-     *
+     * Build the games different DOM Parts.
      */
     that.buildDOMFrame = function () {
       that.$taskDescription = $('<div/>',{
@@ -251,29 +249,29 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       that.buildCardsDOM();
 
       that.$timer = $('<span/>',{
-        html: '<dt role="term" >'+that.params.l10n.timeSpent + '</dt >'+
+        html: '<dt role="term" >' + that.params.l10n.timeSpent + '</dt >'+
           '<dd role="definition"  class="h5p-time-spent" >0:00</dd>'
       });
 
-      that.$counter= $('<span/>',{
-        html:  '<span><dt role="term" >' +that.params.l10n.totalMoves + '</dt>' +
-        '<dd role="definition"  class="h5p-submits">0</dd>'
+      that.$counter= $('<span/>', {
+        html: '<span><dt role="term" >' +that.params.l10n.totalMoves + '</dt>' +
+        '<dd role="definition" class="h5p-submits">0</dd>'
       });
 
       that.timer = new ImageSequencing.Timer(that.$timer.find('.h5p-time-spent'));
       that.counter = new ImageSequencing.Counter(that.$counter.find('.h5p-submits'));
 
-      that.$progressBar = UI.createScoreBar(that.numCards,'scoreBarLabel');
+      that.$progressBar = UI.createScoreBar(that.numCards, 'scoreBarLabel');
 
-      that.$submitButton = that.createButton('submit','check',that.params.l10n.checkAnswer,that.gameSubmitted);
+      that.$submitButton = that.createButton('submit', 'check', that.params.l10n.checkAnswer, that.gameSubmitted);
       if (that.params.behaviour.enableSolution) {
-        that.$showSolutionButton = that.createButton('solution','eye',that.params.l10n.showSolution,that.showSolutions);
+        that.$showSolutionButton = that.createButton('solution', 'eye', that.params.l10n.showSolution, that.showSolutions);
       }
       if (that.params.behaviour.enableRetry) {
-        that.$retryButton = that.createButton('retry','undo',that.params.l10n.tryAgain,that.resetTask);
+        that.$retryButton = that.createButton('retry', 'undo', that.params.l10n.tryAgain, that.resetTask);
       }
       if (that.params.behaviour.enableResume) {
-        that.$resumeButton = that.createButton('resume','redo',that.params.l10n.resume,that.resumeTask);
+        that.$resumeButton = that.createButton('resume', 'redo', that.params.l10n.resume, that.resumeTask);
       }
 
       that.$statusContainer = $('<dl/>',{
@@ -288,43 +286,46 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         tabindex: '0'
       });
 
-      that.$footerContainer = $('<div class="footer-container"  />');
+      that.$footerContainer = $('<div class="footer-container" />');
       that.$feedbackContainer = $('<div class="sequencing-feedback"/>');
       that.$buttonContainer = $('<div class="sequencing-feedback-show" />');
     };
 
-
     /**
-       * activateSortableFunctionality -  activate the sortable functionality on the cards list
-         *
-    */
+     * Activate the sortable functionality on the cards list.
+     */
     that.activateSortableFunctionality = function () {
       that.$list.sortable({
-        placeholder: "sequencing-dropzone",
-        tolerance: "pointer",
-        helper: "clone",
+        placeholder: 'sequencing-dropzone',
+        tolerance: 'pointer',
+        helper: 'clone',
         containment: that.$wrapper,
+
         start: function (event, ui) {
-          $(ui.helper).addClass("ui-sortable-helper");
+          $(ui.helper).addClass('ui-sortable-helper');
           that.timer.play();
           that.triggerXAPI('interacted');
         },
+
         stop: function (event, ui) {
-          $(ui.helper).removeClass("ui-sortable-helper");
+          $(ui.helper).removeClass('ui-sortable-helper');
         },
+
         update: function () {
-          let order = that.$list.sortable("toArray");
-          that.sequencingCards = that.sequencingCards.map((card,index)=>{
-            return (that.sequencingCards.filter((cardItem)=>{
+          const order = that.$list.sortable('toArray');
+          that.sequencingCards = that.sequencingCards.map(function (card, index) {
+            return (that.sequencingCards.filter(function (cardItem) {
               return cardItem.uniqueId === parseInt(order[index].split('_')[1]);
             }))[0];
           });
         },
       });
-      //for preventing clicks on each sortable element
+
+      // for preventing clicks on each sortable element
       that.$list.disableSelection();
+
       // capturing the drop event on sortable
-      that.$list.find("li").droppable({
+      that.$list.find('li').droppable({
         drop: function () {
           that.counter.increment();
           that.isAttempted = true;
@@ -334,17 +335,16 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
 
 
     /**
-     * gameSubmitted - when the user clicks on check button
-     *
+     * Callback for when the user clicks on check button.
      */
     that.gameSubmitted = function () {
       that.isSubmitted = true;
       that.isGamePaused = true;
       that.timer.stop();
-      that.$list.sortable("disable");
+      that.$list.sortable('disable');
       that.stopAudio();
 
-      that.sequencingCards.forEach(function (card , index) {
+      that.sequencingCards.forEach(function (card, index) {
         if (index === card.seqNo) {
           that.score++;
           card.setCorrect();
@@ -355,16 +355,17 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       });
 
       that.$progressBar.setScore(that.score);
-      let scoreText = that.params.l10n.score.replace('@score', that.score).replace(
-        '@total', that.numCards);
+      const scoreText = that.params.l10n.score
+        .replace('@score', that.score)
+        .replace('@total', that.numCards);
       that.$feedback.html(scoreText);
 
       that.$submitButton = that.$submitButton.detach();
       if (that.$showSolutionButton) {
-        that.$showSolutionButton= that.$showSolutionButton.detach();
+        that.$showSolutionButton = that.$showSolutionButton.detach();
       }
 
-      if (that.score != that.numCards) {
+      if (that.score !== that.numCards) {
         if (that.params.behaviour.enableRetry) {
           that.$retryButton.appendTo(that.$buttonContainer);
         }
@@ -372,7 +373,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
           that.$resumeButton.appendTo(that.$buttonContainer);
         }
       }
-      that.$feedbackContainer.addClass('sequencing-feedback-show'); //show  feedbackMessage
+      that.$feedbackContainer.addClass('sequencing-feedback-show'); //show feedbackMessage
       that.$feedback.focus();
 
       /* xApi Section
@@ -386,7 +387,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       //for implementing question contract
       */
 
-      let xAPIEvent = that.createXAPIEventTemplate('answered');
+      const xAPIEvent = that.createXAPIEventTemplate('answered');
       that.addQuestionToXAPI(xAPIEvent);
       that.addResponseToXAPI(xAPIEvent);
       that.trigger(xAPIEvent);
@@ -394,7 +395,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * showSolutions - triggered when user click on show solution button
+     * Trigger when user clicks on show solution button
      */
     that.showSolutions = function () {
       that.isRefresh = true;
@@ -407,10 +408,8 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       that.$showSolution = that.$showSolutionButton.detach();
 
       // need to arrange the list in correct order
-      that.sequencingCards = that.sequencingCards.map((card,index) => {
-        return (that.sequencingCards.filter((cardElement)=> {
-          return cardElement.seqNo === index;
-        }))[0];
+      that.sequencingCards.sort(function (a, b) {
+        return a.seqNo - b.seqNo;
       });
 
       that.buildCardsDOM();
@@ -424,7 +423,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * resetTask - function that gets triggered when retry button is pressed
+     * Reset the task to default values.
      */
     that.resetTask = function () {
       that.isRetry = true;
@@ -435,29 +434,31 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
     };
 
     /**
-     * resumeTask - triggered when user clicks the resume button
+     * Resume task that was interrupted before.
      */
     that.resumeTask = function () {
       that.isRetry = false;
-      that.sequencingCards.forEach((card)=> card.reset() );
+      that.sequencingCards.forEach(function (card) {
+        card.reset();
+      });
       that.refreshTask();
     };
 
     /**
-     * createItemChangeFocusHandler - key board navigation focus handler
+     * Handle keyboard focus.
      *
      * @param {number} direction +1 for forward and -1 for backward
      *
      * @returns {function} function that handles the focus changing functionality
      */
-    let createItemChangeFocusHandler = function (direction) {
-
+    const createItemChangeFocusHandler = function (direction) {
       return function () {
-        let currentItem = this;
+        const currentItem = this;
+
         for (let currentIndex = 0; currentIndex < that.numCards; currentIndex++) {
           if (that.sequencingCards[currentIndex] === currentItem) {
-            let nextItem = that.sequencingCards[currentIndex + direction];
-            let nextIndex = currentIndex + direction;
+            const nextItem = that.sequencingCards[currentIndex + direction];
+            const nextIndex = currentIndex + direction;
             if (!nextItem) {
               //end of list return
               return;
@@ -481,12 +482,13 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
               }
               that.sequencingCards[currentIndex] = that.sequencingCards.splice(nextIndex, 1, that.sequencingCards[currentIndex])[0];
 
+              const tempDesc= currentItem.imageDesc?currentItem.imageDesc:that.params.l10n.ariaCardDesc;
+              const moveDesc = that.params.l10n.ariaMoveDescription
+                .replace('@cardDesc', tempDesc)
+                .replace('@posSrc', currentIndex+1)
+                .replace('@posDes', nextIndex+1);
 
-              let tempDesc= currentItem.imageDesc?currentItem.imageDesc:that.params.l10n.ariaCardDesc;
-              let moveDesc = that.params.l10n.ariaMoveDescription.replace('@cardDesc', tempDesc).replace(
-                '@posSrc', currentIndex+1).replace('@posDes',nextIndex+1);
-
-              currentItem.$card.attr('aria-label',moveDesc);
+              currentItem.$card.attr('aria-label', moveDesc);
               currentItem.setFocus();
               that.counter.increment();
               that.isAttempted = true;
@@ -505,43 +507,44 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
      * Initialize the cards to be used in the game
      */
 
-    //creating an array of unique identifiers for each card in the list
-    let uniqueIndexes = Array.apply(null, {length:that.params.sequenceImages.length}).map(Function.call, Number);
+    // creating an array of unique identifiers for each card in the list
+    const uniqueIndexes = Array
+      .apply(null, {length: that.params.sequenceImages.length})
+      .map(Function.call, Number);
+
     H5P.shuffleArray(uniqueIndexes);
 
-
+    const extraParams = {
+      audioNotSupported: that.params.l10n.audioNotSupported,
+      ariaPlay: that.params.l10n.ariaPlay,
+      ariaCardDesc: that.params.l10n.ariaCardDesc
+    };
 
     that.sequencingCards = that.params.sequenceImages
       .filter(function (params) {
         return ImageSequencing.Card.isValid(params);
       })
       .map(function (params, i) {
-        let extraParams = {
-          audioNotSupported:  that.params.l10n.audioNotSupported,
-          ariaPlay:that.params.l10n.ariaPlay,
-          ariaCardDesc: that.params.l10n.ariaCardDesc
-        };
         return new ImageSequencing.Card(params, id, i,
-          extraParams,uniqueIndexes[i]);
+          extraParams, uniqueIndexes[i]);
       });
 
     H5P.shuffleArray(that.sequencingCards);
     that.numCards = that.sequencingCards.length;
     that.buildDOMFrame();
 
-
     /**
-     * attach - Attach this game's html to the given container.
+     * Attach this game's html to the given container.
      *
      *  @param {H5P.jQuery} $container
      */
     that.attach = function ($container) {
 
       that.triggerXAPI('attempted');
-      that.$wrapper= $container.addClass('h5p-image-sequencing');
+      that.$wrapper = $container.addClass('h5p-image-sequencing');
 
       if (that.$list.children().length) {
-        //add elements to status container
+        // add elements to status container
         that.$timer.appendTo(that.$statusContainer);
         that.$counter.appendTo(that.$statusContainer);
 
@@ -575,4 +578,5 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
   ImageSequencing.prototype = Object.create(EventDispatcher.prototype);
   ImageSequencing.prototype.constructor = ImageSequencing;
   return ImageSequencing;
-})(H5P.EventDispatcher, H5P.jQuery, H5P.JoubelUI);
+
+}) (H5P.EventDispatcher, H5P.jQuery, H5P.JoubelUI);

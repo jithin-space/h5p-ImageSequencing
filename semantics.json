@@ -1,4 +1,5 @@
-[{
+[
+  {
     "label": "Task Description",
     "name": "taskDescription",
     "type": "text",
@@ -11,16 +12,18 @@
     "name": "altTaskDescription",
     "type": "text",
     "default": "Make the following list be ordered correctly. Use the cursor keys to navigate through the list items, use space to activate or deactivate an item and the cursor keys to move it",
-    "description": "A guide intended for visually impaired user on how to solve this task.",
+    "description": "A guide intended for visually impaired users on how to solve this task.",
     "importance": "high"
   },
   {
     "name": "sequenceImages",
     "type": "list",
-    "widgets": [{
-      "name": "VerticalTabs",
-      "label": "Default"
-    }],
+    "widgets": [
+      {
+        "name": "VerticalTabs",
+        "label": "Default"
+      }
+    ],
     "label": "Images",
     "importance": "high",
     "entity": "image",
@@ -30,20 +33,19 @@
       "name": "imageElement",
       "label": "Image Element",
       "importance": "high",
-      "fields": [{
+      "fields": [
+        {
           "name": "image",
           "type": "image",
           "label": "Image",
-          "importance": "high",
-          "ratio": 1
+          "importance": "high"
         },
         {
           "name": "imageDescription",
           "type": "text",
           "label": "Image Description",
           "importance": "low",
-          "description": "An image description if user cannot recognize the image",
-          "ratio": 1
+          "description": "An image description for users who cannot recognize the image"
         },
         {
           "name": "audio",
@@ -63,7 +65,8 @@
     "importance": "low",
     "description": "These options will let you control how the game behaves.",
     "optional": true,
-    "fields": [{
+    "fields": [
+      {
         "name": "enableSolution",
         "type": "boolean",
         "label": "Add a show solution button for the game",
@@ -92,7 +95,8 @@
     "name": "l10n",
     "type": "group",
     "common": true,
-    "fields": [{
+    "fields": [
+      {
         "label": "Total Moves text",
         "importance": "low",
         "name": "totalMoves",

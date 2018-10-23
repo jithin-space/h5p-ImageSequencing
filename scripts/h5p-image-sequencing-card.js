@@ -1,7 +1,7 @@
 (function (ImageSequencing, EventDispatcher, $) {
 
   /**
-   * Controls all the operations for each image card
+   * Controls all the operations for each image card.
    *
    * @class H5P.ImageSequencing.Card
    * @extends H5P.EventDispatcher
@@ -11,39 +11,38 @@
    * @param {Object} extraParams
    * @param {number} uniqueId
    */
-  ImageSequencing.Card = function (cardParams, id, seqNumber,extraParams,uniqueId) {
+  ImageSequencing.Card = function (cardParams, id, seqNumber, extraParams, uniqueId) {
 
     /** @alias H5P.ImageSequencing.Card# */
-    let that = this;
-    let path = H5P.getPath(cardParams.image.path, id);
-    let audio = cardParams.audio;
+    const that = this;
+    const path = H5P.getPath(cardParams.image.path, id);
+    const audio = cardParams.audio;
 
-    that.imageDesc = (cardParams.imageDescription !== undefined) ? cardParams.imageDescription : '';
+    that.imageDesc = cardParams.imageDescription || '';
     that.uniqueId = uniqueId;
     that.seqNo = seqNumber;
     that.isSelected = false;
 
-
     // Initialize event inheritance
     EventDispatcher.call(that);
 
-
     /**
-     * createAudioWrapper - create a container with audio files
+     * Create a container with audio files.
      *
      * @return {H5P.jQuery}  $audioWrapper
      */
     that.createAudioWrapper = function () {
       let audioObj;
-      let $audioWrapper = $('<div>', {
+      const $audioWrapper = $('<div>', {
         'class': 'h5p-image-sequencing-audio-wrapper'
       });
 
       if (audio !== undefined) {
-        let audioDefaults = {
+        const audioDefaults = {
           files: audio,
           audioNotSupported: extraParams.audioNotSupported
         };
+
         audioObj = new H5P.Audio(audioDefaults, id);
         audioObj.attach($audioWrapper);
         // Have to stop else audio will take up a socket pending forever in chrome.
@@ -59,75 +58,90 @@
     };
 
     /**
-     * setCorrect - assign the correctly positioned card with class correct
+     * Assign the correctly positioned card with class correct.
      */
     that.setCorrect = function () {
-      that.$card.removeClass('sequencing-incorrect').addClass(
-        'sequencing-correct');
-      that.$card.find('.sequencing-mark').removeClass(
-        'sequencing-incorrect-mark').addClass('sequencing-correct-mark');
+      that.$card
+        .removeClass('sequencing-incorrect')
+        .addClass('sequencing-correct');
+      that.$card.find('.sequencing-mark')
+        .removeClass('sequencing-incorrect-mark')
+        .addClass('sequencing-correct-mark');
     };
 
     /**
-     * setSolved - mark the card as solved
+     * Mark the card as solved.
      */
     that.setSolved = function () {
-      that.$card.removeClass('sequencing-incorrect').addClass(
-        'sequencing-correct');
+      that.$card
+        .removeClass('sequencing-incorrect')
+        .addClass('sequencing-correct');
     };
 
     /*
-     * setIncorrect - assign the incorrectly positioned card with class incorrect
+     * Assign the incorrectly positioned card with class incorrect.
      */
     that.setIncorrect = function () {
-      that.$card.removeClass('sequencing-correct').addClass(
-        'sequencing-incorrect');
-      that.$card.find('.sequencing-mark').removeClass(
-        'sequencing-correct-mark').addClass('sequencing-incorrect-mark');
+      that.$card
+        .removeClass('sequencing-correct')
+        .addClass('sequencing-incorrect');
+      that.$card
+        .find('.sequencing-mark')
+        .removeClass('sequencing-correct-mark')
+        .addClass('sequencing-incorrect-mark');
     };
 
     /**
-     * reset - reset each card to its default state
+     * Reset each card to its default state.
      */
     that.reset = function () {
-      that.$card.removeClass('sequencing-correct').removeClass(
-        'sequencing-incorrect');
-      that.$card.find('.sequencing-mark').removeClass(
-        'sequencing-correct-mark').removeClass('sequencing-incorrect-mark');
+      that.$card
+        .removeClass('sequencing-correct')
+        .removeClass('sequencing-incorrect');
+      that.$card
+        .find('.sequencing-mark')
+        .removeClass('sequencing-correct-mark')
+        .removeClass('sequencing-incorrect-mark');
     };
 
     /**
-     * setSelected - toggle between selected and unselected states
+     * Toggle between selected and unselected states.
      */
     that.setSelected = function () {
       if (!that.isSelected) {
         that.isSelected = true;
         that.$card.addClass('selected');
-        that.$card.attr('aria-selected',true);
-        that.$audio.find('button').attr('tabindex','0').attr('aria-label',extraParams.ariaPlay).attr('role','button');
+        that.$card.attr('aria-selected', true);
+        that.$audio
+          .find('button')
+          .attr('tabindex', '0')
+          .attr('aria-label', extraParams.ariaPlay)
+          .attr('role', 'button');
         that.trigger('selected');
       }
       else {
         that.isSelected = false;
         that.$card.removeClass('selected');
-        that.$card.attr('aria-selected','');
-        that.$card.attr('aria-label',(that.imageDesc?that.imageDesc:extraParams.ariaCardDesc));
-        that.$audio.find('button').attr('tabindex','-1').attr('aria-label','');
+        that.$card.attr('aria-selected', '');
+        that.$card.attr('aria-label', (that.imageDesc || extraParams.ariaCardDesc));
+        that.$audio
+          .find('button')
+          .attr('tabindex', '-1')
+          .attr('aria-label', '');
       }
     };
 
     /**
-     * makTabbable - Make the card accessible when tabbing
+     * Make the card accessible when tabbing.
      */
     that.makeTabbable = function () {
       if (that.$card) {
         that.$card.attr('tabindex', '0');
-
       }
     };
 
     /**
-     *  setFocus - Make card tabbable and move focus to it
+     * Make card tabbable and move focus to it.
      */
     that.setFocus = function () {
       that.makeTabbable();
@@ -135,7 +149,7 @@
     };
 
     /**
-     *  makeUntabbable - Prevent tabbing to the card
+     * Prevent tabbing to the card.
      */
     that.makeUntabbable = function () {
       if (that.$card) {
@@ -150,63 +164,65 @@
      * @param {H5P.jQuery} $container
      */
     that.appendTo = function ($container) {
-
       that.$audio = that.createAudioWrapper();
-      //disable tabbing the audio button under normal circumstances
-      that.$audio.find('button').attr('tabindex','-1');
-      let label = that.imageDesc?that.imageDesc:extraParams.ariaCardDesc;
 
-      let $cardContainer = $('<li/>',{
+      // Disable tabbing the audio button under normal circumstances
+      that.$audio.find('button').attr('tabindex', '-1');
+      const label = that.imageDesc || extraParams.ariaCardDesc;
+
+      const $cardContainer = $('<li/>',{
         class: 'sequencing-item draggabled',
-        id: 'item_'+that.uniqueId,
+        id: 'item_' + that.uniqueId,
         role: 'option',
         'aria-label': label,
         html: '<span class="sequencing-mark"></span>'
       });
 
-      let $image = $('<div/>',{
+      const $image = $('<div/>',{
         class: 'image-container',
-        html: '<img src="' + path + '"/>'
+        html: '<img src="' + path + '"/>',
+        alt: that.imageDesc
       });
 
-      let $description = $('<div/>',{
+      const $description = $('<div/>',{
         class: 'image-desc',
         'data-title': that.imageDesc,
         html: '<span class="text">' + that.imageDesc + '</span>'
       });
 
-
-      //grouping audio and image in a group
-      that.$sequencingElement= $('<span role="group" />').append(that.$audio).append($image).append($description);
+      // grouping audio and image in a group
+      that.$sequencingElement = $('<span role="group" />')
+        .append(that.$audio)
+        .append($image)
+        .append($description);
       $cardContainer.append(that.$sequencingElement);
       that.$card = $cardContainer;
 
-
       // for tooltip functionality
-      $cardContainer.find('.image-desc').on('click',function () {
-        let $this = $(this);
+      $cardContainer.find('.image-desc').on('click', function () {
+        const $this = $(this);
         if (this.offsetWidth < this.scrollWidth) {
-          $this.tooltip('option','content',$this.find('.text').html());
-          $this.tooltip( "option", "items", "[data-title]" );
+          $this.tooltip('option', 'content', $this.find('.text').html());
+          $this.tooltip( 'option', 'items', '[data-title]' );
         }
         $(this).tooltip('enable').tooltip('open');
       });
 
       $cardContainer.find('.image-desc').tooltip({
         items:'[data-title]',
-        content:'',
+        content: '',
         show: null,
         position: {
-          my: "left top",
-          at: "center bottom",
-          collision: "fit",
-          using: function ( position, feedback ) {
-            $( this ).css( position );
-            $( "<div>" )
-              .addClass( "arrow" )
-              .addClass( feedback.vertical )
-              .addClass( feedback.horizontal )
-              .appendTo( this );
+          my: 'left top',
+          at: 'center bottom',
+          collision: 'fit',
+          using: function (position, feedback) {
+            $(this).css(position);
+            $('<div>')
+              .addClass('arrow')
+              .addClass(feedback.vertical)
+              .addClass(feedback.horizontal)
+              .appendTo(this);
           }
         },
         // disabled by default
@@ -216,9 +232,9 @@
         }
       });
 
-      that.$audio.on('keydown',function (event ) {
-        if (event.which == 13 || event.which == 32) {
-          //play or stop the audio without affecting the card
+      that.$audio.on('keydown', function (event) {
+        if (event.which === 13 || event.which === 32) {
+          // play or stop the audio without affecting the card
           event.stopPropagation();
         }
       });
@@ -268,9 +284,8 @@
    * @returns {boolean}
    */
   ImageSequencing.Card.isValid = function (params) {
-    return (params !== undefined && params.image !== undefined && params.image
-      .path !== undefined);
+    return (params !== undefined && params.image !== undefined &&
+      params.image.path !== undefined);
   };
 
-
-})(H5P.ImageSequencing, H5P.EventDispatcher, H5P.jQuery);
+}) (H5P.ImageSequencing, H5P.EventDispatcher, H5P.jQuery);
