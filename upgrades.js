@@ -6,9 +6,9 @@ H5PUpgrades['H5P.ImageSequencing'] = (function () {
         // Wrap summaries to allow tip.
 
         parameters.behaviour = {
-          enableSolution:true,
-          enableRetry:true,
-          enableResume:true
+          enableSolution: true,
+          enableRetry: true,
+          enableResume: true
         };
 
         parameters.l10n.showSolution = 'Show Solution';
