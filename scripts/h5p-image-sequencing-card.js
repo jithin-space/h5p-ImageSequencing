@@ -63,7 +63,8 @@
     that.setCorrect = function () {
       that.$card
         .removeClass('sequencing-incorrect')
-        .addClass('sequencing-correct');
+        .addClass('sequencing-correct')
+        .attr('aria-label', that.$card.attr('aria-label')+' correct');
       that.$card.find('.sequencing-mark')
         .removeClass('sequencing-incorrect-mark')
         .addClass('sequencing-correct-mark');
@@ -84,7 +85,8 @@
     that.setIncorrect = function () {
       that.$card
         .removeClass('sequencing-correct')
-        .addClass('sequencing-incorrect');
+        .addClass('sequencing-incorrect')
+        .attr('aria-label', that.$card.attr('aria-label')+' incorrect');
       that.$card
         .find('.sequencing-mark')
         .removeClass('sequencing-correct-mark')
@@ -97,7 +99,8 @@
     that.reset = function () {
       that.$card
         .removeClass('sequencing-correct')
-        .removeClass('sequencing-incorrect');
+        .removeClass('sequencing-incorrect')
+        .attr('aria-label', that.imageDesc || extraParams.ariaCardDesc);
       that.$card
         .find('.sequencing-mark')
         .removeClass('sequencing-correct-mark')
