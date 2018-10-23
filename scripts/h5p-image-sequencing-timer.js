@@ -9,7 +9,7 @@
    */
   ImageSequencing.Timer = function ($element) {
     /** @alias H5P.ImageSequencing.Timer# */
-    let that = this;
+    const that = this;
     // Initialize event inheritance
     Timer.call(that, 100);
 
@@ -22,9 +22,10 @@
      *
      * @private
      */
-    let update = function () {
-      let time = that.getTime();
-      let minutes = Timer.extractTimeElement(time, 'minutes');
+    const update = function () {
+      const time = that.getTime();
+
+      const minutes = Timer.extractTimeElement(time, 'minutes');
       let seconds = Timer.extractTimeElement(time, 'seconds') % 60;
       if (seconds < 10) {
         seconds = '0' + seconds;
@@ -44,4 +45,4 @@
   ImageSequencing.Timer.prototype = Object.create(Timer.prototype);
   ImageSequencing.Timer.prototype.constructor = ImageSequencing.Timer;
 
-})(H5P.ImageSequencing, H5P.Timer);
+}) (H5P.ImageSequencing, H5P.Timer);

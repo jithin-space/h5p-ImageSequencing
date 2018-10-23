@@ -5,11 +5,12 @@ H5PUpgrades['H5P.ImageSequencing'] = (function () {
       1: function (parameters, finished) {
         // Wrap summaries to allow tip.
 
-        parameters.behaviour= {
-          enableSolution:true,
-          enableRetry:true,
-          enableResume:true
+        parameters.behaviour = {
+          enableSolution: true,
+          enableRetry: true,
+          enableResume: true
         };
+
         parameters.l10n.showSolution = 'Show Solution';
         parameters.l10n.resume = 'Resume';
         parameters.l10n.audioNotSupported = 'Audio Not Supported';
@@ -22,4 +23,4 @@ H5PUpgrades['H5P.ImageSequencing'] = (function () {
       }
     }
   };
-})();
+}) ();
