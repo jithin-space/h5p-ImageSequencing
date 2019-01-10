@@ -67,7 +67,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         definition.choices[index] = {
           'id': 'item_' + card.uniqueId + '',
           'description': {
-            'en-US':  card.description
+            'en-US':  card.imageDesc
           }
         };
 
