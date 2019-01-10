@@ -92,7 +92,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       const maxScore = that.getMaxScore();
       const score = that.getScore();
       const success = (score === maxScore);
-      const response = [''];
+      let response = [''];
 
       that.sequencingCards.forEach(function (card) {
         if (response[0] !== '') {
@@ -102,7 +102,7 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
       });
 
       xAPIEvent.setScoredResult(score, maxScore, that, true, success);
-      xAPIEvent.data.statement.result.response = response;
+      xAPIEvent.data.statement.result.response = response[0];
     };
 
     // implementing question contract.
