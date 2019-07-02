@@ -1,0 +1,105 @@
+{
+  "semantics": [
+    {
+      "label": "Tehtävänkuvaus",
+      "default": "Raahaa kuvat oikeaan järjestykseen",
+      "description": "Ohjeistus kuinka opiskelijat ratkaisevat tehtävän."
+    },
+    {
+      "label": "Vaihtoehtoinen tehtävänkuvaus ruudunlukijoille",
+      "default": "Järjestä seuraava lista oikeaan järjestykseen. Käytä nuolinäppäimiä navigoidaksesi listalla, käytä space-näppäintä aktivoidaksesi tai poistaaksesi aktivoinnin objektista.",
+      "description": "Opastus näkörajoitteisille henkilöille kuinka he voivat ratkaista tehtävän."
+    },
+    {
+      "widgets": [
+        {
+          "label": "Oletus"
+        }
+      ],
+      "label": "Kuvat",
+      "entity": "kuva",
+      "field": {
+        "label": "Kuvaelementti",
+        "fields": [
+          {
+            "label": "Kuva"
+          },
+          {
+            "label": "Kuvan kuvaus",
+            "description": "Kuvaus kuvasta niille jotka eivät tunnista sitä."
+          },
+          {
+            "description": "Vapaaehtoinen audiotiedosto jonka kortti soittaa",
+            "label": "Audio tiedostot"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Lisäasetukset",
+      "description": "Nämä asetukset vaikuttavat siihen miten peli toimii",
+      "fields": [
+        {
+          "label": "Lisää näytä vastaus -painike pelissä"
+        },
+        {
+          "label": "Lisää yritä uudelleen -painike peliin kun se on ohi."
+        },
+        {
+          "label": "Lisää Jatka-painike"
+        }
+      ]
+    },
+    {
+      "label": "Lokalisaatio",
+      "fields": [
+        {
+          "label": "Siirtoja yhteensä",
+          "default": "Siirtoja yhteensä"
+        },
+        {
+          "label": "Aikaa käytetty",
+          "default": "Aikaa käytetty"
+        },
+        {
+          "label": "Palauteteksti",
+          "default": "Sait @score @total pisteestä",
+          "description": "Palauteteksti, käytettävissä olevat muuttujat: @score ja @total. Esimerkki: 'Sait @score @total mahdollisesta pisteestä'"
+        },
+        {
+          "label": "Teksti \"Check\" painikkeelle",
+          "default": "Tarkista"
+        },
+        {
+          "label": "Teksti \"Retry\" painikkeelle",
+          "default": "Yritä uudelleen"
+        },
+        {
+          "label": "Teksti \"Show Solution\" painikkeelle",
+          "default": "Näytä vastaukset"
+        },
+        {
+          "label": "Teksti \"Resume\" painikkeelle",
+          "default": "Jatka"
+        },
+        {
+          "label": "Audiota ei tuettu virheviesti",
+          "default": "Audioviesti"
+        },
+        {
+          "label": "Play-painike (Teksti ruudunlukijalle)",
+          "default": "Soita vastaava audio"
+        },
+        {
+          "label": "Kortin liikuttamisen kuvaus (Teksti ruudunlukijoille)",
+          "description": "@posSrc : kortin alkusijainti, @posDes : kortin viimeinen sijainti",
+          "default": "Liikutettiin @cardDesc sijainnista @posSrc sijaintiin @posDes"
+        },
+        {
+          "label": "Oletus kuvausteksti kortille (Teksti ruudunlukijoille)",
+          "default": "Sekvensointi-objekti"
+        }
+      ]
+    }
+  ]
+}
