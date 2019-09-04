@@ -93,7 +93,7 @@
         {
           "label": "Kaardi liigutamise kirjeldus (tekst lugeritele)",
           "description": "@posSrc : kaardi algne positsioon, @posDes : kaardi viimane positsioon",
-          "default": "Moved @cardDesc from @posSrc to @posDes"
+          "default": "@cardDesc liigutati positsioonist @posSrc positsioonile @posDes"
         },
         {
           "label": "Kaardi vaikimisi kirjeldus (tekst lugeritele)",
