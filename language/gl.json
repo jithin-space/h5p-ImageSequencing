@@ -1,0 +1,105 @@
+{
+  "semantics": [
+    {
+      "label": "Descrición da tarefa",
+      "default": "Arrastra as imaxes para colocalas na orde correcta",
+      "description": "Unha guía que explica como resolver esta tarefa."
+    },
+    {
+      "label": "Descrición alternativa da tarefa",
+      "default": "Ordea correctamente a seguinte lista. Usa as teclas de cursor para navegar polos elementos da lista, usa a tecla espacio para activar ou desactivar un elemento e as teclas de cursor para movelo",
+      "description": "Unha guía que explica como resolver esta tarefa a usuarios con minusvalías visuais."
+    },
+    {
+      "widgets": [
+        {
+          "label": "Por defecto"
+        }
+      ],
+      "label": "Imaxes",
+      "entity": "imaxe",
+      "field": {
+        "label": "Elemento de imaxe",
+        "fields": [
+          {
+            "label": "Imaxe"
+          },
+          {
+            "label": "Descrición da imaxe",
+            "description": "Descrición da imaxe para aqueles usuarios que non sexan quen de recoñecela"
+          },
+          {
+            "description": "Audio opcional que reproduce a tarxeta",
+            "label": "Arquivos de audio"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Configuración do comportamento",
+      "description": "Esas opcións permitiranche comtrolar o comportamento do xogo.",
+      "fields": [
+        {
+          "label": "Engadir un botón amosar solución ao xogo"
+        },
+        {
+          "label": "Engadir un botón reintentar cando o xogo rematou"
+        },
+        {
+          "label": "Engadir un botón para continuar desde o estado actual"
+        }
+      ]
+    },
+    {
+      "label": "Adaptación local",
+      "fields": [
+        {
+          "label": "Texto para movementos totais",
+          "default": "Movementos Totais"
+        },
+        {
+          "label": "Texto para tempo transcorrido",
+          "default": "Tempo Transcorrido"
+        },
+        {
+          "label": "Texto de retroalimentación",
+          "default": "Conseguiches @score puntos de @total",
+          "description": "Texto de retroalimentación, variables dispoñibles: @score e @total. Exemplo: 'Conseguiches @score de @total puntos posibles'"
+        },
+        {
+          "label": "Texto para o botón \"Comprobar\"",
+          "default": "Comprobar"
+        },
+        {
+          "label": "Texto para o botón \"Reintentar\"",
+          "default": "Reintentar"
+        },
+        {
+          "label": "Texto para o botón \"Amosar Solución\"",
+          "default": "Amosar Solución"
+        },
+        {
+          "label": "Texto para o botón \"Continuar\"",
+          "default": "Continuar"
+        },
+        {
+          "label": "Mensaxe de audio non soportado",
+          "default": "Erro de Audio"
+        },
+        {
+          "label": "Botón de reprodución (texto para lectores de pantalla)",
+          "default": "Reproduce o audio correspondente"
+        },
+        {
+          "label": "Descrición do movemento de tarxeta (texto para lectores de pantalla)",
+          "description": "@posSrc : posición inicial da tarxeta, @posDes : posición final da tarxeta",
+          "default": "Moveuse @cardDesc de @posSrc a @posDes"
+        },
+        {
+          "label": "Descrición por defecto de tarxeta (texto para lectores de pantalla)",
+          "default": "elemento secuenciable"
+        }
+      ]
+    }
+  ]
+}
