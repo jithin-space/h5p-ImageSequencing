@@ -1,0 +1,105 @@
+{
+  "semantics": [
+    {
+      "label": "Ülesande kirjeldus",
+      "default": "Lohista pilte, et neid õigesse järjekorda järjestada",
+      "description": "Juhis, mis ütleb kasutajale, kuidas seda ülesannet lahendada."
+    },
+    {
+      "label": "Alternatiivne ülesande kirjeldus",
+      "default": "Järjesta järgnev loetelu õigesti. Kasuta kursoriklahve, et navigeerida loetelus objektide vahel ja kasuta tühikut, et objekt üles võtta või maha panna ning kursoriklahve, et seda liigutada",
+      "description": "Juhis, kuidas lahendada seda ülesannet, mis on mõeldud nägemispuudega kasutajatele."
+    },
+    {
+      "widgets": [
+        {
+          "label": "Vaikimisi"
+        }
+      ],
+      "label": "Pildid",
+      "entity": "pilt",
+      "field": {
+        "label": "Pildielement",
+        "fields": [
+          {
+            "label": "Pilt"
+          },
+          {
+            "label": "Pildi kirjeldus",
+            "description": "Pildi kirjeldus kasutajatele, kes ei tunne pilti ära"
+          },
+          {
+            "description": "Valikuline heli kaardile mängimiseks",
+            "label": "Helifailid"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Käitumisseadmed",
+      "description": "Need valikud võimaldavad sul juhtida, kuidas mäng käitub.",
+      "fields": [
+        {
+          "label": "Lisa mängu näita lahendust nupp"
+        },
+        {
+          "label": "Lisa mängu lõppu nupp uuesti proovimiseks"
+        },
+        {
+          "label": "Lisa nupp hetkeseisundist jätkamiseks"
+        }
+      ]
+    },
+    {
+      "label": "Lokalisatsioon",
+      "fields": [
+        {
+          "label": "Käike kokku tekst",
+          "default": "Käike kokku"
+        },
+        {
+          "label": "Aega kulunud tekst",
+          "default": "Aega kulunud"
+        },
+        {
+          "label": "Tagasiside tekst",
+          "default": "Sa said @score punkti @total-st",
+          "description": "Tagasiside tekst, muutujad on: @found (leitud) ja @totalWords (sõnu kokku). Näiteks: '@found @totalWords-st leitud'"
+        },
+        {
+          "label": "Tekst \"Kontrolli\" nupule",
+          "default": "Kontrolli"
+        },
+        {
+          "label": "Tekst \"Proovi uuesti\" nupule",
+          "default": "Proovi uuesti"
+        },
+        {
+          "label": "Tekst \"Näita lahendust\" nupule",
+          "default": "Näita lahendust"
+        },
+        {
+          "label": "Tekst \"Jätka\" nupule",
+          "default": "Jätka"
+        },
+        {
+          "label": "Heli pole toetatud sõnum",
+          "default": "heliviga"
+        },
+        {
+          "label": "Mängi nupp (tekst lugeritele)",
+          "default": "Mängi vastavat heli"
+        },
+        {
+          "label": "Kaardi liigutamise kirjeldus (tekst lugeritele)",
+          "description": "@posSrc : kaardi algne positsioon, @posDes : kaardi viimane positsioon",
+          "default": "@cardDesc liigutati positsioonist @posSrc positsioonile @posDes"
+        },
+        {
+          "label": "Kaardi vaikimisi kirjeldus (tekst lugeritele)",
+          "default": "järjestamise objekt"
+        }
+      ]
+    }
+  ]
+}
