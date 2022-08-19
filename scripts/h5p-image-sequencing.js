@@ -567,8 +567,8 @@ H5P.ImageSequencing = (function (EventDispatcher, $, UI) {
         that.$taskDescription.appendTo($container);
         that.$list.appendTo($container);
         that.$footerContainer.appendTo($container);
-
-        that.sequencingCards[0].setFocus();
+        
+        that.sequencingCards[0].makeTabbable();
         that.activateSortableFunctionality();
         that.trigger('resize');
       }
