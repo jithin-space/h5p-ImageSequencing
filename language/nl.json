@@ -1,1 +1,105 @@
-##empty
+{
+  "semantics": [
+    {
+      "label": "Taakomschrijving",
+      "default": "Sleep de afbeeldingen om deze in de juiste volgorde te zetten",
+      "description": "Een leidraad die de gebruiker vertelt hoe hij deze taak moet oplossen."
+    },
+    {
+      "label": "Alternatieve taakomschrijving",
+      "default": "Zorg ervoor dat de volgende lijst correct geordend is. Gebruik de cursortoetsen om door de items van de lijst te navigeren, gebruik de spatiebalk om een item te activeren of te deactiveren en de cursortoetsen om het te verplaatsen",
+      "description": "Een leidraad voor visueel gehandicapte gebruikers over hoe deze taak kan worden opgelost."
+    },
+    {
+      "widgets": [
+        {
+          "label": "Standaard"
+        }
+      ],
+      "label": "Afbeeldingen",
+      "entity": "afbeelding",
+      "field": {
+        "label": "Afbeeldingselement",
+        "fields": [
+          {
+            "label": "Afbeelding"
+          },
+          {
+            "label": "Afbeeldingsbeschrijving",
+            "description": "Een afbeeldingsbeschrijving voor gebruikers die de afbeelding niet kunnen herkennen"
+          },
+          {
+            "description": "Optionele audio voor de kaart om deze af te spelen",
+            "label": "Audiobestanden"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Gedragsinstellingen",
+      "description": "Met deze opties kun je bepalen hoe het spel zich gedraagt.",
+      "fields": [
+        {
+          "label": "Voeg een toon oplossing knop toe aan het spel"
+        },
+        {
+          "label": "Voeg een opnieuw proberen knop toe voor als het spel is afgelopen"
+        },
+        {
+          "label": "Voeg een knop hervatten toe voor tijdens het spel"
+        }
+      ]
+    },
+    {
+      "label": "Lokalisatie",
+      "fields": [
+        {
+          "label": "Tekst voor het totaal aantal zetten",
+          "default": "Totaal aantal zetten"
+        },
+        {
+          "label": "Tekst voor verstreken tijd",
+          "default": "Vertreken tijd"
+        },
+        {
+          "label": "Feedback tekst",
+          "default": "Je hebt @score van de @total punten",
+          "description": "Feedback tekst, beschikbare variabelen: @score en @total. Voorbeeld: 'Je hebt @score van de maximaal @total punten'"
+        },
+        {
+          "label": "Tekst voor \"Controleer\" knop",
+          "default": "Controleer"
+        },
+        {
+          "label": "Tekst voor \"Opnieuw\" knop",
+          "default": "Opnieuw"
+        },
+        {
+          "label": "Tekst voor \"Toon Oplossing\" knop",
+          "default": "Toon oplossing"
+        },
+        {
+          "label": "Tekst voor \"Hervatten\" knop",
+          "default": "Hervatten"
+        },
+        {
+          "label": "Bericht als de audio niet wordt ondersteund",
+          "default": "Fout in de audio"
+        },
+        {
+          "label": "Afspeelknop (tekst voor readspeakers)",
+          "default": "Speel de overeenkomstige audio"
+        },
+        {
+          "label": "Beschrijving bij het slepen van kaarten (tekst voor readspeakers)",
+          "description": "@posSrc : beginpositie kaart, @posDes : eindpositie kaart",
+          "default": "Verplaatst @cardDesc van @posSrc naar @posDes"
+        },
+        {
+          "label": "Standaardbeschrijving van de kaart (tekst voor readspeakers)",
+          "default": "volgorde van het item"
+        }
+      ]
+    }
+  ]
+}
