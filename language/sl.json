@@ -1,0 +1,105 @@
+{
+  "semantics": [
+    {
+      "label": "Navodilo udeležencem",
+      "default": "Razporedi slike na pravilna mesta v zaporedju",
+      "description": "Opis reševanja zadane naloge."
+    },
+    {
+      "label": "Nadomestno navodilo udeležencem",
+      "default": "Naj bo naslednje zaporedje pravilno urejeno. S smernimi tipkami se pomikaj po elementih in jih aktiviraj ali deaktiviraj s preslednico za premik na drugo mesto. ",
+      "description": "Opis reševanja zadane naloge za slabovidne uporabnike."
+    },
+    {
+      "widgets": [
+        {
+          "label": "Privzeto"
+        }
+      ],
+      "label": "Slike",
+      "entity": "slika",
+      "field": {
+        "label": "Slika",
+        "fields": [
+          {
+            "label": "Slika"
+          },
+          {
+            "label": "Opis slike",
+            "description": "Nadomestno besedilo z opisom prikazanega na sliki"
+          },
+          {
+            "description": "Neobvezen zvočni posnetek, ki se predvaja ob prikazu slike.",
+            "label": "Zvočni posnetek"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Nastavitve interakcije",
+      "description": "Nastavitve omogočajo nadzor nad interakcijo aktivnosti za udeležence.",
+      "fields": [
+        {
+          "label": "Omogoči gumb \"Prikaži rešitev\""
+        },
+        {
+          "label": "Omogoči gumb \"Poskusi ponovno\""
+        },
+        {
+          "label": "Omogoči gumb \"Začni znova\""
+        }
+      ]
+    },
+    {
+      "label": "Uporabniški vmesnik",
+      "fields": [
+        {
+          "label": "Besedilo za informiranje o številu potez",
+          "default": "Število potez:"
+        },
+        {
+          "label": "Besedilo za informiranje o porabljenem času",
+          "default": "Porabljen čas:"
+        },
+        {
+          "label": "Besedilo povratne informacije",
+          "default": "Dosežene točke: @score od @total",
+          "description": "@score in @total sta spremenljivki."
+        },
+        {
+          "label": "Besedilo za gumb \"Preveri\"",
+          "default": "Preveri"
+        },
+        {
+          "label": "Besedilo za gumb \"Poskusi ponovno\"",
+          "default": "Poskusi ponovno"
+        },
+        {
+          "label": "Besedilo za gumb \"Prikaži rešitev\"",
+          "default": "Prikaži rešitev"
+        },
+        {
+          "label": "Besedilo gumba \"Začni znova\"",
+          "default": "Začni znova"
+        },
+        {
+          "label": "Sporočilo o nepodprtosti zvočnega posnetka",
+          "default": "Napaka s predvajanjem zvoka"
+        },
+        {
+          "label": "Gumb za predvajanje (besedilo za bralnik zaslona)",
+          "default": "Predvajaj pripadajoč zvok"
+        },
+        {
+          "label": "Opis premikanja slik (besedilo za bralnik zaslona)",
+          "description": "Spremenljivka @posSrc označuje začetno, @posDes pa končno mesto slike v zaporedju.",
+          "default": "Slika @cardDesc je prestavljena iz mesta @posSrc na @posDes"
+        },
+        {
+          "label": "Privzeti opis slike (besedilo za bralnik zaslona)",
+          "default": "element zaporedja"
+        }
+      ]
+    }
+  ]
+}
